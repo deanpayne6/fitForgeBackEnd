@@ -1,8 +1,10 @@
 require("dotenv").config();
-//require("./config/database").connect();
+require("./config/database").connect();
 const express = require("express");
 
 const app = express();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 
@@ -13,7 +15,7 @@ const User = require("./model/user");
   app.post("/register", async (req,  res) => {
     try {
         // Get user input
-        const { first_name, last_name, email, password } = req.body;
+        const { first_name="Andrew", last_name="De La Rosa", email="adelarosa1000@gmail.com", password="wudbvoweafb" } = req.body;
     
         // Validate user input
         if (!(email && password && first_name && last_name)) {
@@ -42,7 +44,7 @@ const User = require("./model/user");
         // Create token
         const token = jwt.sign(
           { user_id: user._id, email },
-          process.env.TOKEN_KEY,
+          "" + process.env.TOKEN_KEY,
           {
             expiresIn: "2h",
           }
@@ -65,7 +67,7 @@ app.post("/login", async (req, res) => {
 // our login logic goes here
 try {
     // Get user input
-    const { email, password } = req.body;
+    const {  email="adelarosa1000@gmail.com", password="wudbvoweafb" } = req.body;
 
     // Validate user input
     if (!(email && password)) {
@@ -78,7 +80,7 @@ try {
       // Create token
       const token = jwt.sign(
         { user_id: user._id, email },
-        process.env.TOKEN_KEY,
+        "" + process.env.TOKEN_KEY,
         {
           expiresIn: "2h",
         }
