@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./config/database").connect();
 const express = require("express");
+const auth = require("./middleware/auth");
 
 const app = express();
 const bcrypt = require("bcrypt");
@@ -11,11 +12,17 @@ app.use(express.json());
 // importing user context
 const User = require("./model/user");
 
+// Welcome
+app.post("/welcome", auth, (req, res) => {
+  res.status(200).send("Welcome 🙌 ");
+});
+
 // Register
   app.post("/register", async (req,  res) => {
     try {
         // Get user input
-        const { first_name="Andrew", last_name="De La Rosa", email="adelarosa1000@gmail.com", password="wudbvoweafb" } = req.body;
+        const { first_name, last_name, email, password } = req.body;
+        
     
         // Validate user input
         if (!(email && password && first_name && last_name)) {
