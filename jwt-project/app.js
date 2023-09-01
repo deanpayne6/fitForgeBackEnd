@@ -56,6 +56,29 @@ app.post("/welcome", auth, (req, res) => {
             expiresIn: "2h",
           }
         );
+        //checkEmailAvailability Create a post function to check email is available.
+        app.post("/register", async (req,  res) => {
+          
+              // Get user input
+              const { first_name, last_name, email, password } = req.body;
+              
+          
+              // Validate user input
+              if (!(email && password && first_name && last_name)) {
+                res.status(400).send("All input is required");
+              }
+          
+              // check if user already exist
+              // Validate if user exist in our database
+              const oldUser = await User.findOne({ email });
+          
+              if (oldUser) {
+                return res.status(409).send("User Already Exist. Please Login");
+              }
+              else // code 200 which post is successful.
+                return res.status(200).send("Email is Available.");
+            });      
+
         // save user token
         user.token = token;
     
