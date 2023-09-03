@@ -6,6 +6,8 @@ const auth = require("./middleware/auth");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Pool } = require('pg');
+
 
 app.use(express.json());
 
@@ -109,7 +111,24 @@ try {
 });
 
 // tentative db connection logic
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  password: process.env.DB_PASSWORD,
+  host: 5432,
+});
 
+app.get('/getData', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM users');
+    client.release();
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error executing SQL query:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 module.exports = app;
