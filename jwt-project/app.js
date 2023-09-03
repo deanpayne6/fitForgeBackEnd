@@ -2,7 +2,7 @@ require("dotenv").config();
 require("./config/database").connect();
 const express = require("express");
 const auth = require("./middleware/auth");
-
+const mysql = require("mysql")
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -111,24 +111,24 @@ try {
 });
 
 // tentative db connection logic
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  password: process.env.DB_PASSWORD,
-  host: 5432,
-});
+let pool = mysql.createPool({
+  host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
+  user: "fitforge",
+  password: "fitforge",
+  port: "3306",
+  database: "fitforge"
+})
 
-app.get('/getData', async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM users');
-    client.release();
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error executing SQL query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+app.get("/getlogindata", async (req, res) => {
+  const query = 'SELECT * FROM users';
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to execute query' });
+    } else {
+      res.json(results);
+    }
+  });
 });
-
 
 module.exports = app;
