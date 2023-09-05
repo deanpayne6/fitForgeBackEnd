@@ -131,4 +131,16 @@ app.get("/getlogindata", async (req, res) => {
   });
 });
 
+app.get("/getEmailData", async (req, res) => {
+  const query = 'SELECT email FROM users';
+  pool.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to execute query' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 module.exports = app;
