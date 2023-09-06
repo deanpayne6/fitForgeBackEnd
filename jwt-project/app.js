@@ -7,6 +7,7 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Pool } = require('pg');
+const cors = require("cors")
 
 
 app.use(express.json());
@@ -119,19 +120,19 @@ let pool = mysql.createPool({
   database: "fitforge"
 })
 
-app.get("/getlogindata", async (req, res) => {
-  const query = 'SELECT * FROM users';
-  pool.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Failed to execute query' });
-    } else {
-      res.json(results);
-    }
-  });
-});
+// app.get("/getlogindata", async (req, res) => {
+//   const query = 'SELECT * FROM users';
+//   pool.query(query, (error, results) => {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Failed to execute query' });
+//     } else {
+//       res.json(results);
+//     }
+//   });
+// });
 
-app.get("/getEmailData", async (req, res) => {
+app.get("//checkEmailAvailability", async (req, res) => {
   const query = 'SELECT email FROM users';
   pool.query(query, (error, results) => {
     if (error) {
@@ -142,5 +143,23 @@ app.get("/getEmailData", async (req, res) => {
     }
   });
 });
+
+
+// app.get("/checkEmailAvailability", async (req, res) => {
+//   const { email } = req.query;
+//   try {
+//     const user = await User.findOne({ email });
+//     if (user) {
+//       res.status(200).json({ exists: true }); // Email exists
+//     } else {
+//       res.status(200).json({ exists: false }); // Email does not exist
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     if (!res.headersSent) {
+//       res.status(500).json({ error: "Server Error" });
+//     }
+//   }
+// });
 
 module.exports = app;
