@@ -120,6 +120,17 @@ let pool = mysql.createPool({
   database: "fitforge"
 })
 
+
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("Error acquiring connection from pool: " + err.message);
+  } else {
+    console.log("Connected to MySQL database");
+    // Release the connection back to the pool
+    connection.release();
+  }
+});
+
 // app.get("/getlogindata", async (req, res) => {
 //   const query = 'SELECT * FROM users';
 //   pool.query(query, (error, results) => {
@@ -132,34 +143,41 @@ let pool = mysql.createPool({
 //   });
 // });
 
-app.get("//checkEmailAvailability", async (req, res) => {
-  const query = 'SELECT email FROM users';
-  pool.query(query, (error, results) => {
+// app.get("/checkEmailAvailability", async (req, res) => {
+//   let query = 'select email from users where email = ' + req.email
+//   pool.query(query, (error, results) => {
+//     try{
+//     if(results = req.email) {
+//       res.status(200).json({exists: true});
+//     }else{
+//       res.status(500).json({exists:false});
+//     }}catch (err){
+//       console.error(err);
+//     }
+//   });
+// });
+
+
+app.get("/checkEmailAvailability", (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const query = "SELECT * FROM users WHERE email = ?";
+  pool.query(query, [email], (error, results) => {
     if (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to execute query' });
+      return res.status(500).json({ error: "Server Error" });
+    }
+
+    if (results.length > 0) {
+      res.status(200).json({ exists: true }); // Email exists
     } else {
-      res.json(results);
+      res.status(200).json({ exists: false }); // Email does not exist
     }
   });
 });
-
-
-// app.get("/checkEmailAvailability", async (req, res) => {
-//   const { email } = req.query;
-//   try {
-//     const user = await User.findOne({ email });
-//     if (user) {
-//       res.status(200).json({ exists: true }); // Email exists
-//     } else {
-//       res.status(200).json({ exists: false }); // Email does not exist
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     if (!res.headersSent) {
-//       res.status(500).json({ error: "Server Error" });
-//     }
-//   }
-// });
 
 module.exports = app;
