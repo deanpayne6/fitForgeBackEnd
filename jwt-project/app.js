@@ -1,5 +1,5 @@
 require("dotenv").config();
-require("./config/database").connect();
+//require("./config/database").connect();
 const express = require("express");
 const auth = require("./middleware/auth");
 const mysql = require("mysql")
