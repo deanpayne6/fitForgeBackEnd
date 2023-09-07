@@ -4,18 +4,18 @@ const server = http.createServer(app);
 
 const allowedOrigins = ["http://localhost:4200"]; 
 
-server.on("request", (req, res) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
+// server.on("request", (req, res) => {
+//   const origin = req.headers.origin;
+//   if (allowedOrigins.includes(origin)) {
+//     res.setHeader("Access-Control-Allow-Origin", origin);
+//   }
 
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
 
-  app(req, res);
-});
+//   app(req, res);
+// });
 
 const port = 3200;
 
