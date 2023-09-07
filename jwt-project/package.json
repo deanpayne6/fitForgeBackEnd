@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.4.0",
     "mongoose": "^7.1.0",
+    "mysql": "^2.18.1",
     "pg": "^8.11.3"
   },
   "devDependencies": {
