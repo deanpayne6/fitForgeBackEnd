@@ -28,19 +28,19 @@ app.use((req, res, next) => {
 app.get("/checkEmailAvailability", (req, res) => {
   const { email } = req.query;
 
-  if (!email) {
-    return res.status(400).json({ error: "Email is required" });
-  }
+  // if (!email) {
+  //   return res.status(400).json({ error: "Email is required" });
+  // }
 
   const query = "SELECT * FROM users WHERE email = ?";
   req.mysqlConnection.query(query, [email], (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Server Error" });
-    }
+    // if (error) {
+    //   console.error(error);
+    //   return res.status(500).json({ error: "Server Error" });
+    // }
 
     // Release the connection
-    req.mysqlConnection.release();
+    //req.mysqlConnection.release();
 
     if (results.length > 0) {
       res.status(200).json({ exists: true }); // Email exists
