@@ -53,6 +53,32 @@ app.get("/checkEmailAvailability", (req, res) => {
   });
 });
 
+app.get("/checkUsernameAvailability", (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const query = "SELECT * FROM users WHERE username = ?";
+  req.mysqlConnection.query(query, [email], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Server Error" });
+    }
+
+    // Release the connection
+    //req.mysqlConnection.release();
+
+    if (results.length > 0) {
+      res.status(200).json({ exists: true }); // Email exists
+    } else {
+      res.status(200).json({ exists: false }); // Email does not exist
+    }
+  });
+});
+
+
 
 module.exports = app;
 
