@@ -24,9 +24,9 @@ exports.connect = () => {
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-  host: "fitforge-db.c6jigttrktuk.us-west-1.rds.amazonaws.com",
+  host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
   user: "fitforge",
-  password: "Fitforge123%%"
+  password: "fitforge"
 });
 
 con.connect(function(err) {
