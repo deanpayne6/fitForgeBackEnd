@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+var mysql = require('mysql');
 
 const userSchema = new mongoose.Schema({
   first_name: { type: String, default: null },
@@ -8,4 +8,4 @@ const userSchema = new mongoose.Schema({
   token: { type: String },
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mysql.model("user", userSchema);
