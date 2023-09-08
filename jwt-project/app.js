@@ -1,7 +1,5 @@
 require("dotenv").config();
-require("./config/database").connect();
 const express = require("express");
-const auth = require("./middleware/auth");
 const mysql = require("mysql")
 const app = express();
 const bcrypt = require("bcrypt");
@@ -59,29 +57,6 @@ app.post("/welcome", auth, (req, res) => {
             expiresIn: "2h",
           }
         );
-        //checkEmailAvailability Create a post function to check email is available.
-        app.post("/register", async (req,  res) => {
-          
-              // Get user input
-              const { first_name, last_name, email, password } = req.body;
-              
-          
-              // Validate user input
-              if (!(email && password && first_name && last_name)) {
-                res.status(400).send("All input is required");
-              }
-          
-              // check if user already exist
-              // Validate if user exist in our database
-              const oldUser = await User.findOne({ email });
-          
-              if (oldUser) {
-                return res.status(409).send("User Already Exist. Please Login");
-              }
-              else // code 200 which post is successful.
-                return res.status(200).send("Email is Available.");
-            });      
-
         // save user token
         user.token = token;
     
@@ -141,45 +116,34 @@ let pool = mysql.createPool({
   password: "fitforge",
   port: "3306",
   database: "fitforge"
-})
-
-
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error acquiring connection from pool: " + err.message);
-  } else {
-    console.log("Connected to MySQL database");
-    // Release the connection back to the pool
-    connection.release();
-  }
 });
 
-// app.get("/getlogindata", async (req, res) => {
-//   const query = 'SELECT * FROM users';
-//   pool.query(query, (error, results) => {
-//     if (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Failed to execute query' });
-//     } else {
-//       res.json(results);
-//     }
-//   });
-// });
+app.use((req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({ error: "Database Connection Error" });
+    }
+    req.mysqlConnection = connection;
+    next();
+  });
+});
 
-// app.get("/checkEmailAvailability", async (req, res) => {
-//   let query = 'select email from users where email = ' + req.email
-//   pool.query(query, (error, results) => {
-//     try{
-//     if(results = req.email) {
-//       res.status(200).json({exists: true});
-//     }else{
-//       res.status(500).json({exists:false});
-//     }}catch (err){
-//       console.error(err);
-//     }
-//   });
-// });
+app.use(cors());
 
+app.post("/register",(req,res) => {
+  const {
+    first_name,
+    last_name,
+    email,
+    password,
+    // username, //this field has not been added to the db
+    // userAge, //this field has not been added to the db
+  } = req.body
+
+  // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
+  // unless you guys send responses back
+
+});
 
 app.get("/checkEmailAvailability", (req, res) => {
   const { email } = req.query;
@@ -189,7 +153,29 @@ app.get("/checkEmailAvailability", (req, res) => {
   }
 
   const query = "SELECT * FROM users WHERE email = ?";
-  pool.query(query, [email], (error, results) => {
+  req.mysqlConnection.query(query, [email], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Server Error" });
+    }
+
+    if (results.length > 0) {
+      res.status(200).json({ exists: true }); // Email exists
+    } else {
+      res.status(200).json({ exists: false }); // Email does not exist
+    }
+  });
+});
+
+app.get("/checkUsernameAvailability", (req, res) => {
+  const { username } = req.query;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username is required" });
+  }
+
+  const query = "SELECT * FROM users WHERE username = ?";
+  req.mysqlConnection.query(query, [username], (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: "Server Error" });

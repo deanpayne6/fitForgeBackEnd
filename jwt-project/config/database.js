@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+/*const mongoose = require("mongoose");
 
 const { DB_HOST } = process.env;
 
@@ -19,4 +19,17 @@ exports.connect = () => {
       console.error(error);
       process.exit(1);
     });
-};
+};*/
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
+  user: "fitforge",
+  password: "fitforge"
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+});
