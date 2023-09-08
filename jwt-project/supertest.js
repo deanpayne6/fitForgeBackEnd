@@ -17,7 +17,7 @@ describe('POST /register', () => {
         host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
         user: "fitforge",
         password: "fitforge",
-        database: 'fitforge_database', // Use your test database
+        database: 'fitforge',
       
     });
   });
