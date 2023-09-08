@@ -56,7 +56,7 @@ app.get("/checkEmailAvailability", (req, res) => {
 app.get("/checkUsernameAvailability", (req, res) => {
   const { username } = req.query;
 
-  if (!email) {
+  if (!username) {
     return res.status(400).json({ error: "Username is required" });
   }
 
