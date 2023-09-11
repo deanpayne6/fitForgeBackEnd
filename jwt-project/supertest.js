@@ -1,6 +1,5 @@
 const express = require('express');
 const request = require('supertest');
-const request = require('supertest');
 const mysql = require('mysql2/promise'); // Use mysql2/promise for async/await support
 const app = require('./app'); // Import your Express app (replace with the actual path)
 const chai = require('chai'); // Still trying to figute out what this does.
