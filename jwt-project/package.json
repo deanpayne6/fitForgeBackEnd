@@ -21,7 +21,8 @@
     "mongodb": "^5.4.0",
     "mongoose": "^7.1.0",
     "mysql": "^2.18.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
