@@ -75,7 +75,7 @@ app.post("/login", async (req, res) => {
 // our login logic goes here
 try {
     // Get user input
-    const {  email, password } = req.body;
+    const user1 = req.body;
 
     // Validate user input
     if (!(email && password)) {
