@@ -14,60 +14,60 @@ app.use(express.json());
 const User = require("./model/user");
 
 // Welcome
-app.post("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
-});
+// app.post("/welcome", auth, (req, res) => {
+//   res.status(200).send("Welcome 🙌 ");
+// });
 
-// Register
-  app.post("/register", async (req,  res) => {
-    try {
-        // Get user input
-        const { first_name, last_name, email, password } = req.body;
+// // Register
+//   app.post("/register", async (req,  res) => {
+//     try {
+//         // Get user input
+//         const { first_name, last_name, email, password } = req.body;
         
     
-        // Validate user input
-        if (!(email && password && first_name && last_name)) {
-          res.status(400).send("All input is required");
-        }
+//         // Validate user input
+//         if (!(email && password && first_name && last_name)) {
+//           res.status(400).send("All input is required");
+//         }
     
-        // check if user already exist
-        // Validate if user exist in our database
-        const oldUser = await User.findOne({ email });
+//         // check if user already exist
+//         // Validate if user exist in our database
+//         const oldUser = await User.findOne({ email });
     
-        if (oldUser) {
-          return res.status(409).send("User Already Exist. Please Login");
-        }
+//         if (oldUser) {
+//           return res.status(409).send("User Already Exist. Please Login");
+//         }
     
-        //Encrypt user password
-        const encryptedPassword = await bcrypt.hash(password, 10);
+//         //Encrypt user password
+//         const encryptedPassword = await bcrypt.hash(password, 10);
     
-        // Create user in our database
-        const user = await User.create({
-          first_name,
-          last_name,
-          email: email.toLowerCase(), // sanitize: convert email to lowercase
-          password: encryptedPassword,
-        });
+//         // Create user in our database
+//         const user = await User.create({
+//           first_name,
+//           last_name,
+//           email: email.toLowerCase(), // sanitize: convert email to lowercase
+//           password: encryptedPassword,
+//         });
     
-        // Create token
-        const token = jwt.sign(
-          { user_id: user._id, email },
-          "" + process.env.TOKEN_KEY,
-          {
-            expiresIn: "2h",
-          }
-        );
-        // save user token
-        user.token = token;
+//         // Create token
+//         const token = jwt.sign(
+//           { user_id: user._id, email },
+//           "" + process.env.TOKEN_KEY,
+//           {
+//             expiresIn: "2h",
+//           }
+//         );
+//         // save user token
+//         user.token = token;
     
-        // return new user
-        res.status(201).json(user);
-      } catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error");
-      }
-      // Our register logic ends here
-});
+//         // return new user
+//         res.status(201).json(user);
+//       } catch (err) {
+//         console.log(err);
+//         res.status(500).send("Server Error");
+//       }
+//       // Our register logic ends here
+// });
 
 
 // Login
@@ -130,18 +130,25 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
-app.post("/register",(req,res) => {
-  const {
-    first_name,
-    last_name,
-    email,
-    password,
-    // username, //this field has not been added to the db
-    // userAge, //this field has not been added to the db
-  } = req.body
+app.post("/register", async (req,res) => {
+  const user = req.body;
+  const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
+  const user_data = [user.username, user.email, user.firstname, user.lastname, encryptedPassword, user.age]
+  const query = "insert into fitforge.users (username, email, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
+
+  req.mysqlConnection.query(query, user_data, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Server Error" });
+    }
+    else {
+      return res.status(200).json({success: true}); // success
+    }
+  });
 
   // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
   // unless you guys send responses back
+    //no
 
 });
 
