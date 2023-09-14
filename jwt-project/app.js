@@ -131,16 +131,23 @@ app.use((req, res, next) => {
 app.use(cors());
 
 app.post("/register", async (req,res) => {
+  // receive user information
   const user = req.body;
+  //encrypt password
   const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
+  // unravel JSON object
   const user_data = [user.username, user.email, user.firstname, user.lastname, encryptedPassword, user.age]
+  // insert statement
   const query = "insert into fitforge.users (username, email, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
-  req.mysqlConnection.query(query, user_data, (error, results) => {
+  // db connection and statement execution
+  pool.mysqlConnection.query(query, user_data, (error, results) => {
+    // if query does not work, handle error here
     if (error) {
       console.error(error);
       return res.status(500).json({ error: "Server Error" });
     }
+    // else, return a successful run
     else {
       return res.status(200).json({success: true}); // success
     }
