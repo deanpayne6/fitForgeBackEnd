@@ -69,18 +69,32 @@ const User = require("./model/user");
 //       // Our register logic ends here
 // });
 
+const pool = mysql.createPool({
+  host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
+  user: "fitforge",
+  password: "fitforge",
+  port: "3306",
+  database: "fitforge"
+});
 
 // Login
 app.post("/login", async (req, res) => {
 // our login logic goes here
 
   const user = req.body;
-  // ask professor if there is an easy way to see this
+  
   const password_check = user.password_hash;
 
-  const user_data = [user.email, user.password_hash];
+  const user_data = [user.username, user.password_hash];
 
-  // const 
+  // check if username exists
+  const query = "SELECT username FROM users where username = ?";
+ 
+  
+
+  // compare password to hashed password for said username
+
+  // if username exists and password hash matches, generate a login token with a success code
 
 // try {
 //     // Get user input
@@ -148,13 +162,6 @@ app.post("/register", async (req,res) => {
 });
 
 // tentative db connection logic
-let pool = mysql.createPool({
-  host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
-  user: "fitforge",
-  password: "fitforge",
-  port: "3306",
-  database: "fitforge"
-});
 
 app.use((req, res, next) => {
   pool.getConnection((err, connection) => {
@@ -199,7 +206,7 @@ app.get("/checkUsernameAvailability", (req, res) => {
     return res.status(400).json({ error: "Username is required" });
   }
 
-  const query = "SELECT * FROM users WHERE username = ?";
+  const query = "SELECT * FROM usrs WHERE username = ?";
   req.mysqlConnection.query(query, [username], (error, results) => {
     if (error) {
       console.error(error);
