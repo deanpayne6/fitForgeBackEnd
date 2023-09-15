@@ -73,41 +73,52 @@ const User = require("./model/user");
 // Login
 app.post("/login", async (req, res) => {
 // our login logic goes here
-try {
-    // Get user input
-    const user1 = req.body;
 
-    // Validate user input
-    if (!(email && password)) {
-      res.status(400).send("All input is required");
-    }
-    // Validate if user exist in our database
-    const user = await User.findOne({ email });
+  const user = req.body;
+  // ask professor if there is an easy way to see this
+  const password_check = user.password_hash;
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      // Create token
-      const token = jwt.sign(
-        { user_id: user._id, email },
-        "" + process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
+  const user_data = [user.email, user.password_hash];
 
-      // save user token
-      user.token = token;
+  // const 
 
-      // user
-      res.status(200).json(user);
-    }
-    res.status(400).send("Invalid Credentials");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server Error");
-  }
+// try {
+//     // Get user input
+//     const user1 = req.body;
+
+//     // Validate user input
+//     if (!(email && password)) {
+//       res.status(400).send("All input is required");
+//     }
+//     // Validate if user exist in our database
+//     const user = await User.findOne({ email });
+
+//     if (user && (await bcrypt.compare(password, user.password))) {
+//       // Create token
+//       const token = jwt.sign(
+//         { user_id: user._id, email },
+//         "" + process.env.TOKEN_KEY,
+//         {
+//           expiresIn: "2h",
+//         }
+//       );
+
+//       // save user token
+//       user.token = token;
+
+//       // user
+//       res.status(200).json(user);
+//     }
+//     res.status(400).send("Invalid Credentials");
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send("Server Error");
+//   }
   
-  // Our register logic ends here
+  // Our regi     ster logic ends here
 });
+
+
 
 // tentative db connection logic
 let pool = mysql.createPool({
@@ -130,34 +141,7 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
-app.post("/register", async (req,res) => {
-  // receive user information
-  const user = req.body;
-  //encrypt password
-  const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
-  // unravel JSON object
-  const user_data = [user.username, user.email, user.firstname, user.lastname, encryptedPassword, user.age]
-  // insert statement
-  const query = "insert into fitforge.users (username, email, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
-  // db connection and statement execution
-  pool.mysqlConnection.query(query, user_data, (error, results) => {
-    // if query does not work, handle error here
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Server Error" });
-    }
-    // else, return a successful run
-    else {
-      return res.status(200).json({success: true}); // success
-    }
-  });
-
-  // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
-  // unless you guys send responses back
-    //no
-
-});
 
 app.get("/checkEmailAvailability", (req, res) => {
   const { email } = req.query;
