@@ -156,6 +156,7 @@ app.post("/register", async (req,res) => {
   });
 
  //generate random token for password recovery.
+ /*
  async function generateToken() {
    // Generate a unique value, e.g., a timestamp or a random string
   const uniqueValue = Date.now().toString(); // You can use any unique value
@@ -163,7 +164,53 @@ app.post("/register", async (req,res) => {
 
   return token;
 }
+*/
+//request password
+/*
+app.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
 
+    // Find the user with the provided email address
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate a secure token for password reset
+    const token = generateToken();
+
+    // Save the token and its expiration time in the user document
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
+
+    await user.save();
+
+    // Send a password reset email to the user
+    const resetLink = `fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com/reset-password?token=${token}`; // placeholder for now
+    const mailOptions = {
+      from: 'fitForgeSupport@gmail.com', // placeholder for now
+      to: email,
+      subject: 'Password Reset Request',
+      text: `You are receiving this email because you (or someone else) have requested a password reset. Please click on the following link to reset your password: ${resetLink}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Failed to send reset email' });
+      }
+
+      console.log(`Password reset email sent to: ${email}`);
+      res.status(200).json({ message: 'Password reset email sent' });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+*/
   // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
   // unless you guys send responses back
     //no
