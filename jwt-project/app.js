@@ -129,7 +129,7 @@ app.post("/login", async (req, res) => {
 //     res.status(500).send("Server Error");
 //   }
   
-  // Our regi     ster logic ends here
+  // Our register logic ends here
 });
 
 app.post("/register", async (req,res) => {
@@ -154,6 +154,15 @@ app.post("/register", async (req,res) => {
       return res.status(200).json({success: true}); // success
     }
   });
+
+ //generate random token for password recovery.
+ async function generateToken() {
+   // Generate a unique value, e.g., a timestamp or a random string
+  const uniqueValue = Date.now().toString(); // You can use any unique value
+  const token = await bcrypt.hash(uniqueValue, 10); // Hash the unique value with bcrypt
+
+  return token;
+}
 
   // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
   // unless you guys send responses back
