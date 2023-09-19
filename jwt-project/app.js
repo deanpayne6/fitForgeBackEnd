@@ -100,8 +100,9 @@ app.post("/login", async (req, res) => {
   console.log(username);
 
   // check if username exists
-  const query = "SELECT * FROM users where username = ?";
-  let user_data;
+  const query = "SELECT * FROM users where user_id = '6'";
+  // get ready to store hashed pass
+  let hashed_pass;
   req.mysqlConnection.query(query, [username], (error, results) => {
     // if query does not work, handle error here
     if (error) {
@@ -110,12 +111,34 @@ app.post("/login", async (req, res) => {
     }
     // else, return a successful run
     else {
+      // if there are any results returned, evaluate them
       if (results.length > 0) {
-        res.status(200).json({ exists: true }); // Email exists
-      } else {
-        res.status(200).json({ exists: false }); // Email does not exist
+        const data = results[0];
+        hashed_pass = data.password_hash;
+        console.log(data.password_hash)
+        console.log(hashed_pass)
+        // compare passwords
+        bcrypt.compare(password_check, hashed_pass, (compareError, isMatch) => {
+          if (compareError) {
+            console.error(compareError);
+            return res.status(500).json({ error: "Server Error" });
+          }
+          // if passwords match, authenticate
+          if (isMatch) {
+            // Passwords match, you can proceed with authentication
+            res.status(200).json({ authenticated: true });
+            /*     CREATE TOKEN HERE    */
+          } else {
+            // Passwords don't match, authentication failed
+            res.status(200).json({ authenticated: false });
+          }
+        })
       }
-      console.log(password_hash)
+      else {
+        res.status(200).json({ exists: false }); // Send a response when no results are found 
+      }
+      
+
     }
   });
 
@@ -159,18 +182,28 @@ app.post("/login", async (req, res) => {
   // Our register logic ends here
 });
 
+app.use((req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({ error: "Database Connection Error" });
+    }
+    req.mysqlConnection = connection;
+    next();
+  });
+});
+
 app.post("/register", async (req,res) => {
   // receive user information
   const user = req.body;
   //encrypt password
   const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
   // unravel JSON object
-  const user_data = [user.username, user.email, user.firstname, user.lastname, encryptedPassword, user.age]
+  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]
   // insert statement
-  const query = "insert into fitforge.users (username, email, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
+  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
   // db connection and statement execution
-  pool.mysqlConnection.query(query, user_data, (error, results) => {
+  req.mysqlConnection.query(query, user_data, (error, results) => {
     // if query does not work, handle error here
     if (error) {
       console.error(error);
