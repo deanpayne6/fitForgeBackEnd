@@ -77,20 +77,47 @@ const pool = mysql.createPool({
   database: "fitforge"
 });
 
+app.use((req, res, next) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({ error: "Database Connection Error" });
+    }
+    req.mysqlConnection = connection;
+    next();
+  });
+});
+
 // Login
 app.post("/login", async (req, res) => {
 // our login logic goes here
 
   const user = req.body;
-  
+  console.log(user)
   const password_check = user.password_hash;
+  console.log(password_check);
 
-  const user_data = [user.username, user.password_hash];
+  const username = user.username;
+  console.log(username);
 
   // check if username exists
-  const query = "SELECT username FROM users where username = ?";
- 
-  
+  const query = "SELECT * FROM users where username = ?";
+  let user_data;
+  req.mysqlConnection.query(query, [username], (error, results) => {
+    // if query does not work, handle error here
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Server Error" });
+    }
+    // else, return a successful run
+    else {
+      if (results.length > 0) {
+        res.status(200).json({ exists: true }); // Email exists
+      } else {
+        res.status(200).json({ exists: false }); // Email does not exist
+      }
+      console.log(password_hash)
+    }
+  });
 
   // compare password to hashed password for said username
 
@@ -219,15 +246,7 @@ app.post('/forgot-password', async (req, res) => {
 
 // tentative db connection logic
 
-app.use((req, res, next) => {
-  pool.getConnection((err, connection) => {
-    if (err) {
-      return res.status(500).json({ error: "Database Connection Error" });
-    }
-    req.mysqlConnection = connection;
-    next();
-  });
-});
+
 
 app.use(cors());
 
@@ -262,7 +281,7 @@ app.get("/checkUsernameAvailability", (req, res) => {
     return res.status(400).json({ error: "Username is required" });
   }
 
-  const query = "SELECT * FROM usrs WHERE username = ?";
+  const query = "SELECT * FROM users WHERE username = ?";
   req.mysqlConnection.query(query, [username], (error, results) => {
     if (error) {
       console.error(error);
