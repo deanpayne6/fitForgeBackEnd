@@ -17,10 +17,7 @@ const User = require("./model/user");
 
 const auth = require("./middleware/auth");
 
-// Welcome
-app.post("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
-});
+
 
 // // Register
 //   app.post("/register", async (req,  res) => {
@@ -89,6 +86,11 @@ app.use((req, res, next) => {
     req.mysqlConnection = connection;
     next();
   });
+});
+
+// Welcome
+app.post("/welcome", auth, (req, res) => {
+  res.status(200).send("Welcome 🙌 ");
 });
 
 // Login
