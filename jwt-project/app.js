@@ -223,9 +223,9 @@ app.post("/register", async (req,res) => {
  
 
   // unravel JSON object
-  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]
+  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age, user.token]
   // insert statement
-  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
+  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age, token) VALUES (?, ?, ?, ?, ?, ?,?)";
 
   // db connection and statement execution
   req.mysqlConnection.query(query, user_data, (error, results) => {
