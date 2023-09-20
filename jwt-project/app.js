@@ -13,10 +13,14 @@ app.use(express.json());
 // importing user context
 const User = require("./model/user");
 
+//importing verifyToken
+
+const auth = require("./middleware/auth");
+
 // Welcome
-// app.post("/welcome", auth, (req, res) => {
-//   res.status(200).send("Welcome 🙌 ");
-// });
+app.post("/welcome", auth, (req, res) => {
+  res.status(200).send("Welcome 🙌 ");
+});
 
 // // Register
 //   app.post("/register", async (req,  res) => {
@@ -197,6 +201,25 @@ app.post("/register", async (req,res) => {
   const user = req.body;
   //encrypt password
   const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
+  //create token
+  const token = jwt.sign(
+    { user_id: user._id, email },
+    process.env.TOKEN_KEY,
+    {
+      expiresIn: "2h",
+    }
+  );
+  //save user token
+  user.token = token;
+  // return new user
+ 
+  if (error) {
+    console.log(err);
+  }
+  // else, return a successful run
+  else {res.status(201).json(user); }
+ 
+
   // unravel JSON object
   const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]
   // insert statement
