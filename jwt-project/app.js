@@ -89,14 +89,14 @@ app.use((req, res, next) => {
 });
 
 // Welcome
-app.post("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
-});
+//app.post("/welcome", auth, (req, res) => {
+//  res.status(200).send("Welcome 🙌 ");
+//});
 
 // Login
-app.post("/login", async (req, res) => {
+app.post("/login", auth, async (req, res) => {
 // our login logic goes here
-
+res.status(200).send("Welcome 🙌 ");
   const user = req.body;
   console.log(user)
   const password_check = user.password_hash;
