@@ -96,7 +96,7 @@ app.use((req, res, next) => {
 // Login
 app.post("/login", auth, async (req, res) => {
 // our login logic goes here
-res.status(200).send("Welcome 🙌 ");
+res.status(200).send("Welcome 🙌 "); // users token was authenticated.
   const user = req.body;
   console.log(user)
   const password_check = user.password_hash;
