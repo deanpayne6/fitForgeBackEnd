@@ -14,50 +14,9 @@ server.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
 
-// //Test Menu for workout selection
-// //Front end will take care of this, once it is ready, will replace this with the app.post/get calls (idk which one)
-// //which will recieve the data on which muscle groups were chosen, how many were chosen, and the chosen length of the workout
-// const prompt = require('prompt-sync')({sigint: true})
-// console.log('1. Short (3-4 Workouts)\n2. Medium (4-6 Workouts)\n3. Long (8-6 Workouts)')
-// workoutLength = prompt("Please Select a Workout Length Option: ")
-// workoutLength = Number(workoutLength)
-// console.log("You Have Chosen a " + lengthList[workoutLength-1] + " Workout")
-
-// menuOption = 0
-// count = 0
-// if(workoutLength != 1){
-//     console.log("You May Select up to 3 Muscle Groups")
-//     while(menuOption != 8){
-//         menuOption = prompt('Please Select a Muscle Group: ')
-//         menuOption = Number(menuOption)
-//         if (menuOption != 8){
-//             muscleArray.push(allWorkouts[menuOption-1])
-//             chosenGroups.push(muscleGroup[menuOption-1])
-//         }
-//         count++
-//         if(count == 3)
-//             menuOption = 8
-//     }
-// }
-
-// else{
-//     console.log("You May Select up to 2 Muscle Groups")
-//     while(menuOption != 8){
-//         menuOption = prompt('Please Select a Muscle Group: ')
-//         menuOption = Number(menuOption)
-//         if (menuOption != 8){
-//             muscleArray.push(allWorkouts[menuOption-1])
-//             chosenGroups.push(muscleGroup[menuOption-1])
-//         }
-//         count++
-//         if(count == 2)
-//             menuOption = 8
-//     }
-// }
-
 app.post("/generateWorkout", async (req,res) => {
     //Arrays of workouts for testing generate workout
-    //Once Database is set up, the sql queries will go here, will grab all 7 muscle groups and put them into a list like shown below
+    //Once Database is set up, the sql queries will go here, will grab the list from each muscle group and put them into a list like shown below
     testBicep = ["Dumbbell Curl", "Reverse Dumbbell Curl", "Dumbbell Hammer Curl", "Zottman Bicep Curl", "Concentration Bicep Curl", 
     "Dumbbell Incline Biceps Curl", "Dumbbell Wall BicepsCurl", "Step Back BicepsCurl", "Dumbbell Pinwheel BicepsCurl", 
     "Offset BicepsCurl", "Biceps 21s"]
