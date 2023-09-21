@@ -94,9 +94,9 @@ app.use((req, res, next) => {
 //});
 
 // Login
-app.post("/login", auth, async (req, res) => {
+app.get("/login", async (req, res) => {
 // our login logic goes here
-res.status(200).send("Welcome 🙌 "); // users token was authenticated.
+//res.status(200).send("Welcome 🙌 "); // users token was authenticated.
   const user = req.body;
   console.log(user)
   const password_check = user.password_hash;
@@ -223,9 +223,9 @@ app.post("/register", async (req,res) => {
  
 
   // unravel JSON object
-  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age, user.token]
+  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]
   // insert statement
-  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age, token) VALUES (?, ?, ?, ?, ?, ?,?)";
+  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?,?)";
 
   // db connection and statement execution
   req.mysqlConnection.query(query, user_data, (error, results) => {
