@@ -165,6 +165,11 @@ return res
       .status(200)
       .json({ message: "Successfully logged out 😏 🍀" });
   });
+
+  //protected can only be accessed with jwt-token in cookie
+  app.get("/protected", auth, (req, res) => {
+    return res.json({ user: { id: req.userId, role: req.userRole } });
+  });
   // compare password to hashed password for said username
 
   // if username exists and password hash matches, generate a login token with a success code
