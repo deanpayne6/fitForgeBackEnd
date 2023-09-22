@@ -96,7 +96,16 @@ app.use((req, res, next) => {
 // Login
 app.get("/login", async (req, res) => {
 // our login logic goes here
-//res.status(200).send("Welcome 🙌 "); // users token was authenticated.
+
+const token = jwt.sign({ id: 7, role: "admin" }, "YOUR_SECRET_KEY");
+return res
+  .cookie("access_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  })
+  .status(200)
+  .json({ message: "Logged in successfully 😊 👌" });
+
   const user = req.body;
   console.log(user)
   const password_check = user.password_hash;
