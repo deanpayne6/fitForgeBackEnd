@@ -14,6 +14,7 @@ server.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
 
+//http://localhost:3306/generateWorkout
 app.post("/generateWorkout", async (req,res) => {
     //Arrays of workouts for testing generate workout
     //Once Database is set up, the sql queries will go here, will grab the list from each muscle group and put them into a list like shown below
@@ -118,6 +119,7 @@ app.post("/generateWorkout", async (req,res) => {
 
 //will get username, use that to create a sql query that grabs all workouts from the past
 //return an array of the past workouts and their lengths
+//http://localhost:3306/workoutLog
 app.post("/workoutLog", async (req,res) => {
     //db logic
     var con = mysql.createConnection({
