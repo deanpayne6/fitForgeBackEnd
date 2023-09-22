@@ -1,11 +1,24 @@
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 
-const app = express();
 
-app.use(cookieParser());
+
 const config = process.env;
+const auth = (req, res, next) => {
+  const token = req.cookies.access_token;
+  if (!token) {
+    return res.sendStatus(403);
+  }
+  try {
+    const data = jwt.verify(token, "YOUR_SECRET_KEY");
+    req.userId = data.id;
+    req.userRole = data.role;
+    return next();
+  } catch {
+    return res.sendStatus(403);
+  }
+};
 
+/*
 const verifyToken = (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
@@ -21,7 +34,7 @@ const verifyToken = (req, res, next) => {
   }
   return next();
 };
-
+*/
 /*
 app.get("/user/verifyToken", (req, res) => {
 let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;

@@ -4,11 +4,13 @@ const mysql = require("mysql")
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser"); 
 const { Pool } = require('pg');
 const cors = require("cors")
 
 
 app.use(express.json());
+app.use(cookieParser());
 
 // importing user context
 const User = require("./model/user");
@@ -16,7 +18,6 @@ const User = require("./model/user");
 //importing verifyToken
 
 const auth = require("./middleware/auth");
-
 
 
 // // Register
@@ -156,7 +157,14 @@ return res
 
     }
   });
-
+  //logout
+  app.get("/logout", auth, (req, res) => {
+    //out login logic goes here
+    return res
+      .clearCookie("access_token")
+      .status(200)
+      .json({ message: "Successfully logged out 😏 🍀" });
+  });
   // compare password to hashed password for said username
 
   // if username exists and password hash matches, generate a login token with a success code
