@@ -19,6 +19,7 @@ app.post("/generateWorkout", async (req,res) => {
     const {workoutInput, workoutLength, username} = req.body;
     muscleArray = []
     workoutList = []
+    tempArray = []
     equipmentLevel = 0
     count = 0
 
@@ -29,16 +30,16 @@ app.post("/generateWorkout", async (req,res) => {
         database: "fitforge"
     });
 
-    //Short Workout Length, 1 Workout Chosen
-    if((workoutLength == "short") && (workoutInput.length == 1)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-        con.connect(function(err){
+    const query1 = "SELECT * FROM users where username = ?"
+    con.connect(function(err){
+        if (err) throw err;
+        con.query(query1, username, function (err, result){
             if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            equipmentLevel = result[0].equipmentlevel_id
+
+            //Short Workout Length, 1 Workout Chosen
+            if((workoutLength == "short") && (workoutInput.length == 1)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -62,22 +63,12 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Short Workout Length, 2 Workouts Chosen
-    else if((workoutLength == "short") && (workoutInput.length == 2)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Short Workout Length, 2 Workouts Chosen
+            else if((workoutLength == "short") && (workoutInput.length == 2)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
-                
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
                     for(let i = 0; i < workoutInput.length; i++){
@@ -100,20 +91,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Medium Workout Length, 1 Workout Chosen
-    else if((workoutLength == "medium") && (workoutInput.length == 1)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Medium Workout Length, 1 Workout Chosen
+            else if((workoutLength == "medium") && (workoutInput.length == 1)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -137,20 +119,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Medium Workout Length, 2 Workouts Chosen
-    else if((workoutLength == "medium") && (workoutInput.length == 2)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Medium Workout Length, 2 Workouts Chosen
+            else if((workoutLength == "medium") && (workoutInput.length == 2)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -174,20 +147,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Medium Workout Length, 3 Workouts Chosen
-    else if((workoutLength == "medium") && (workoutInput.length == 3)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Medium Workout Length, 3 Workouts Chosen
+            else if((workoutLength == "medium") && (workoutInput.length == 3)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -211,20 +175,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
-    
-    //Long Workout Length, 1 Workout Chosen
-    else if((workoutLength == "long") && (workoutInput.length == 1)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            }
+            
+            //Long Workout Length, 1 Workout Chosen
+            else if((workoutLength == "long") && (workoutInput.length == 1)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -248,20 +203,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Long Workout Length, 2 Workouts Chosen
-    else if((workoutLength == "long") && (workoutInput.length == 2)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Long Workout Length, 2 Workouts Chosen
+            else if((workoutLength == "long") && (workoutInput.length == 2)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -285,20 +231,11 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    //Long Workout Length, 3 Workouts Chosen
-    else if((workoutLength == "long") && (workoutInput.length == 3)){
-        tempArray = []
-        const query1 = "SELECT * FROM users where username = ?"
-        const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
-        con.connect(function(err){
-            if (err) throw err;
-            con.query(query1, username, function (err, result){
-                if (err) throw err;
-                equipmentLevel = result[0].equipmentlevel_id
+            //Long Workout Length, 3 Workouts Chosen
+            else if((workoutLength == "long") && (workoutInput.length == 3)){
+                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
                 const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
                 con.query(query2, muscleGroups, function (err, result){
                     if (err) throw err;
@@ -322,13 +259,13 @@ app.post("/generateWorkout", async (req,res) => {
                     }
                     res.status(200).json(workoutList)
                 })
-            })
-        })
-    }
+            }
 
-    else{
-        res.status(400).send("Invalid Inputs")
-    }  
+            else{
+                res.status(400).send("Invalid Inputs")
+            }  
+        })
+    })
 })
 
 //will get username, use that to create a sql query that grabs all workouts from the past
@@ -372,6 +309,4 @@ app.post("/workoutLog", async (req,res) => {
               }
           });
       });
-    
-
 })
