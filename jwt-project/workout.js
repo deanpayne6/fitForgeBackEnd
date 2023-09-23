@@ -35,235 +35,237 @@ app.post("/generateWorkout", async (req,res) => {
         if (err) throw err;
         con.query(query1, username, function (err, result){
             if (err) throw err;
-            equipmentLevel = result[0].equipmentlevel_id
+            if (result.length > 0){
+                equipmentLevel = result[0].equipmentlevel_id
 
-            //Short Workout Length, 1 Workout Chosen
-            if((workoutLength == "short") && (workoutInput.length == 1)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Short Workout Length, 1 Workout Chosen
+                if((workoutLength == "short") && (workoutInput.length == 1)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 3; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 3; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Short Workout Length, 2 Workouts Chosen
-            else if((workoutLength == "short") && (workoutInput.length == 2)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Short Workout Length, 2 Workouts Chosen
+                else if((workoutLength == "short") && (workoutInput.length == 2)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 4; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 4; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Medium Workout Length, 1 Workout Chosen
-            else if((workoutLength == "medium") && (workoutInput.length == 1)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Medium Workout Length, 1 Workout Chosen
+                else if((workoutLength == "medium") && (workoutInput.length == 1)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 4; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 4; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Medium Workout Length, 2 Workouts Chosen
-            else if((workoutLength == "medium") && (workoutInput.length == 2)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Medium Workout Length, 2 Workouts Chosen
+                else if((workoutLength == "medium") && (workoutInput.length == 2)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 6; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 6; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Medium Workout Length, 3 Workouts Chosen
-            else if((workoutLength == "medium") && (workoutInput.length == 3)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Medium Workout Length, 3 Workouts Chosen
+                else if((workoutLength == "medium") && (workoutInput.length == 3)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 6; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
-            
-            //Long Workout Length, 1 Workout Chosen
-            else if((workoutLength == "long") && (workoutInput.length == 1)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                        for(let i = 0; i < 6; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
+                
+                //Long Workout Length, 1 Workout Chosen
+                else if((workoutLength == "long") && (workoutInput.length == 1)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 6; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 6; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Long Workout Length, 2 Workouts Chosen
-            else if((workoutLength == "long") && (workoutInput.length == 2)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Long Workout Length, 2 Workouts Chosen
+                else if((workoutLength == "long") && (workoutInput.length == 2)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 8; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
-            }
+                        for(let i = 0; i < 8; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
 
-            //Long Workout Length, 3 Workouts Chosen
-            else if((workoutLength == "long") && (workoutInput.length == 3)){
-                const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
-                const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
-                con.query(query2, muscleGroups, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].muscle_group == workoutInput[i]){
-                                tempArray.push(result[j].name)
+                //Long Workout Length, 3 Workouts Chosen
+                else if((workoutLength == "long") && (workoutInput.length == 3)){
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE muscle_group = ? + ? + ? and equipmentlevel = ?"
+                    const muscleGroups = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
+                    con.query(query2, muscleGroups, function (err, result){
+                        if (err) throw err;
+                        for(let i = 0; i < workoutInput.length; i++){
+                            for(let j = 0; j < result.length; j++){
+                                if(result[j].muscle_group == workoutInput[i]){
+                                    tempArray.push(result[j].name)
+                                }
                             }
+                            muscleArray.push(tempArray)
+                            tempArray = []
                         }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    for(let i = 0; i < 8; i++){
-                        if(count == workoutInput.length)
-                            count = 0
-                        singleGroup = muscleArray[count]
-                        randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                        workoutList.push(singleGroup[randomWorkout])
-                        muscleArray[count].splice(randomWorkout, 1)
-                        count++
-                    }
-                    res.status(200).json(workoutList)
-                })
+                        for(let i = 0; i < 8; i++){
+                            if(count == workoutInput.length)
+                                count = 0
+                            singleGroup = muscleArray[count]
+                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
+                            workoutList.push(singleGroup[randomWorkout])
+                            muscleArray[count].splice(randomWorkout, 1)
+                            count++
+                        }
+                        res.status(200).json(workoutList)
+                    })
+                }
+                else
+                    res.status(400).send("Invalid Inputs")
             }
-
-            else{
-                res.status(400).send("Invalid Inputs")
-            }  
+            else
+                res.status(400).send("Invalid Username")
         })
     })
 })
@@ -272,7 +274,6 @@ app.post("/generateWorkout", async (req,res) => {
 //return an array of the past workouts and their lengths
 //http://localhost:3306/workoutLog
 app.post("/workoutLog", async (req,res) => {
-    //db logic
     var con = mysql.createConnection({
         host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
         user: "fitforge",
