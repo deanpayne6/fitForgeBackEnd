@@ -354,4 +354,8 @@ app.get("/checkUsernameAvailability", (req, res) => {
   });
 });
 
+app.post("/questionnaireSubmission", (req, res) => {
+  const { questionnaire } = req.body;
+});
+
 module.exports = app;
