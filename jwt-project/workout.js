@@ -20,7 +20,7 @@ app.post("/generateWorkout", async (req,res) => {
     muscleArray = []
     workoutList = []
     tempArray = []
-    equipmentLevel = 0
+    equipmentlevel_id = 0
     count = 0
 
     var con = mysql.createConnection({
@@ -36,17 +36,17 @@ app.post("/generateWorkout", async (req,res) => {
         con.query(query1, username, function (err, result){
             if (err) throw err;
             if (result.length > 0){
-                equipmentLevel = result[0].equipmentlevel_id
+                equipmentlevel_id = result[0].equipmentlevel_id
 
                 //Short Workout Length, 1 Workout Chosen
                 if((workoutLength == "short") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -68,13 +68,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Short Workout Length, 2 Workouts Chosen
                 else if((workoutLength == "short") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ? or ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -96,13 +96,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Medium Workout Length, 1 Workout Chosen
                 else if((workoutLength == "medium") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -124,13 +124,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Medium Workout Length, 2 Workouts Chosen
                 else if((workoutLength == "medium") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ? or ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -152,13 +152,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Medium Workout Length, 3 Workouts Chosen
                 else if((workoutLength == "medium") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ? or ? or ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -180,13 +180,13 @@ app.post("/generateWorkout", async (req,res) => {
                 
                 //Long Workout Length, 1 Workout Chosen
                 else if((workoutLength == "long") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -208,13 +208,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Long Workout Length, 2 Workouts Chosen
                 else if((workoutLength == "long") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ? or ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
@@ -236,13 +236,13 @@ app.post("/generateWorkout", async (req,res) => {
 
                 //Long Workout Length, 3 Workouts Chosen
                 else if((workoutLength == "long") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup_id = ? or ? or ?) and (equipmentlevel = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentLevel]
+                    const query2 = "SELECT * FROM fitforge.exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
+                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
                     con.query(query2, muscleGroup, function (err, result){
                         if (err) throw err;
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup_id == workoutInput[i]){
+                                if(result[j].musclegroup == workoutInput[i]){
                                     tempArray.push(result[j].name)
                                 }
                             }
