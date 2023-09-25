@@ -16,7 +16,6 @@ app.use(cookieParser());
 const User = require("./model/user");
 
 //importing verifyToken
-
 const auth = require("./middleware/auth");
 
 
@@ -98,7 +97,7 @@ app.use((req, res, next) => {
 app.get("/login", async (req, res) => {
 // our login logic goes here
 
-const token = jwt.sign({ id: 7, role: "admin" }, "YOUR_SECRET_KEY");
+const token = jwt.sign({ id: 1, role: "admin" }, "YOUR_SECRET_KEY");
 return res
   .cookie("access_token", token, {
     httpOnly: true,
@@ -116,7 +115,7 @@ return res
   console.log(username);
 
   // check if username exists
-  const query = "SELECT * FROM users where user_id = '6'";
+  const query = "SELECT * FROM users where user_id = '1'";
   // get ready to store hashed pass
   let hashed_pass;
   req.mysqlConnection.query(query, [username], (error, results) => {
@@ -226,6 +225,7 @@ app.post("/register", async (req,res) => {
   //encrypt password
   const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
   //create token
+/*
   const token = jwt.sign(
     { user_id: user._id, email },
     process.env.TOKEN_KEY,
@@ -242,7 +242,7 @@ app.post("/register", async (req,res) => {
   }
   // else, return a successful run
   else {res.status(201).json(user); }
- 
+ */
 
   // unravel JSON object
   const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]

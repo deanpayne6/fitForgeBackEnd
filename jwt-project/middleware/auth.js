@@ -56,4 +56,4 @@ try {
 }
 })
 */
-module.exports = verifyToken;
+module.exports = auth;
