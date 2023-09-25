@@ -105,7 +105,7 @@ return res
     secure: process.env.NODE_ENV === "production",
   })
   .status(200)
-  .json({ message: "Logged in successfully 😊 👌" });
+  .json({ message: "Logged in successfully." });
 
   const user = req.body;
   console.log(user)
@@ -163,7 +163,7 @@ return res
     return res
       .clearCookie("access_token")
       .status(200)
-      .json({ message: "Successfully logged out 😏 🍀" });
+      .json({ message: "Successfully logged out." });
   });
 
   //protected can only be accessed with jwt-token in cookie
