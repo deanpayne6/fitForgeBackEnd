@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 
 
 const config = process.env;
-const auth = (req, res, next) => {
+const auth = (req, res, next) => { //XSS attack prone "  httpOnly cookie and sending it 
+  //to the server as a request cookie is the only secure way of using JWT"
   const token = req.cookies.access_token;
   if (!token) {
     return res.sendStatus(403);
