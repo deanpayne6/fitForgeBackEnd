@@ -22,6 +22,7 @@ app.post("/generateWorkout", async (req,res) => {
     tempArray = []
     equipmentlevel_id = 0
     count = 0
+    nullCounter = 0
 
     var con = mysql.createConnection({
         host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
@@ -62,7 +63,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -90,7 +98,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -118,7 +133,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -146,7 +168,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -174,7 +203,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
                 
@@ -202,7 +238,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -230,7 +273,14 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
 
@@ -258,11 +308,18 @@ app.post("/generateWorkout", async (req,res) => {
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
-                        res.status(200).json(workoutList)
+                        for(let k = 0; k < workoutList.length; k++){
+                            if(workoutList[k] == null)
+                                nullCounter++
+                        }
+                        if(nullCounter > 0)
+                            res.status(400).send("Invalid Muscle Group(s)")
+                        else
+                            res.status(200).json(workoutList)
                     })
                 }
                 else
-                    res.status(400).send("Invalid Inputs")
+                    res.status(400).send("Invalid Input(s)")
             }
             else
                 res.status(400).send("Invalid Username")
