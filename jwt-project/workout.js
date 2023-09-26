@@ -1,21 +1,8 @@
 require("dotenv").config();
-const express = require("express");
 const mysql = require("mysql")
-const app = express();
-app.use(express.json())
 
-const http = require("http");
-const { API_PORT } = process.env;
-const port = process.env.PORT || API_PORT;
-const server = http.createServer(app);
-
-
-server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
-
-//http://localhost:3306/generateWorkout
-app.post("/generateWorkout", async (req,res) => {
+//http://localhost:3200/generateWorkout
+function generateWorkout(req, res){
     const {workoutInput, workoutLength, username} = req.body;
     muscleArray = []
     workoutList = []
@@ -325,12 +312,12 @@ app.post("/generateWorkout", async (req,res) => {
                 res.status(400).send("Invalid Username")
         })
     })
-})
+}
 
 //will get username, use that to create a sql query that grabs all workouts from the past
 //return an array of the past workouts and their lengths
-//http://localhost:3306/workoutLog
-app.post("/workoutLog", async (req,res) => {
+//http://localhost:3200/workoutLog
+function workoutLog(req,res) {
     var con = mysql.createConnection({
         host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
         user: "fitforge",
@@ -367,4 +354,6 @@ app.post("/workoutLog", async (req,res) => {
               }
           });
       });
-})
+}
+
+module.exports = {generateWorkout, workoutLog};
