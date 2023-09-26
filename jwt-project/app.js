@@ -17,7 +17,7 @@ const User = require("./model/user");
 
 const auth = require("./middleware/auth");
 
-
+app.use(cors());
 
 // // Register
 //   app.post("/register", async (req,  res) => {
@@ -88,28 +88,24 @@ app.use((req, res, next) => {
   });
 });
 
-// Welcome
-//app.post("/welcome", auth, (req, res) => {
-//  res.status(200).send("Welcome 🙌 ");
-//});
 
 // Login
 app.get("/login", async (req, res) => {
-// our login logic goes here
-//res.status(200).send("Welcome 🙌 "); // users token was authenticated.
-  const user = req.body;
+  const user = req.query;
   console.log(user)
-  const password_check = user.password_hash;
+  const password_check = user.password;
   console.log(password_check);
 
-  const username = user.username;
-  console.log(username);
+  // const username = user.username;
+  // console.log(username);
+
+  const email = user.email;
 
   // check if username exists
-  const query = "SELECT * FROM users where user_id = '6'";
+  const query = "SELECT * FROM users where emailaddress = ?";
   // get ready to store hashed pass
   let hashed_pass;
-  req.mysqlConnection.query(query, [username], (error, results) => {
+  req.mysqlConnection.query(query, [email], (error, results) => {
     // if query does not work, handle error here
     if (error) {
       console.error(error);
@@ -121,8 +117,6 @@ app.get("/login", async (req, res) => {
       if (results.length > 0) {
         const data = results[0];
         hashed_pass = data.password_hash;
-        console.log(data.password_hash)
-        console.log(hashed_pass)
         // compare passwords
         bcrypt.compare(password_check, hashed_pass, (compareError, isMatch) => {
           if (compareError) {
@@ -132,7 +126,8 @@ app.get("/login", async (req, res) => {
           // if passwords match, authenticate
           if (isMatch) {
             // Passwords match, you can proceed with authentication
-            res.status(200).json({ authenticated: true });
+            console.log("hi")
+            res.json({ authenticated: true });
             /*     CREATE TOKEN HERE    */
           } else {
             // Passwords don't match, authentication failed
@@ -201,31 +196,32 @@ app.use((req, res, next) => {
 app.post("/register", async (req,res) => {
   // receive user information
   const user = req.body;
+  console.log(user);
   //encrypt password
-  const encryptedPassword = await bcrypt.hash(user.password_hash, 10)  
+  const encryptedPassword = await bcrypt.hash(user.password, 10); 
   //create token
-  const token = jwt.sign(
-    { user_id: user._id, email },
-    process.env.TOKEN_KEY,
-    {
-      expiresIn: "2h",
-    }
-  );
-  //save user token
-  user.token = token;
-  // return new user
+  // const token = jwt.sign(
+  //   { user_id: user._id, emailaddress },
+  //   process.env.TOKEN_KEY,
+  //   {
+  //     expiresIn: "2h",
+  //   }
+  // );
+  // //save user token
+  // user.token = token;
+  // // return new user
  
-  if (error) {
-    console.log(err);
-  }
+  // if (error) {
+  //   console.log(err);
+  // }
   // else, return a successful run
-  else {res.status(201).json(user); }
+  //else { res.status(201).json(user); }
  
 
   // unravel JSON object
-  const user_data = [user.username, user.emailaddress, user.firstname, user.lastname, encryptedPassword, user.age]
+  const user_data = [user.username, user.email, user.first_name, user.last_name, encryptedPassword, user.userAge]
   // insert statement
-  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?,?)";
+  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
   // db connection and statement execution
   req.mysqlConnection.query(query, user_data, (error, results) => {
@@ -306,7 +302,7 @@ app.post('/forgot-password', async (req, res) => {
 
 
 
-app.use(cors());
+
 
 
 
@@ -317,7 +313,7 @@ app.get("/checkEmailAvailability", (req, res) => {
     return res.status(400).json({ error: "Email is required" });
   }
 
-  const query = "SELECT * FROM users WHERE email = ?";
+  const query = "SELECT * FROM users WHERE emailaddress = ?";
   req.mysqlConnection.query(query, [email], (error, results) => {
     if (error) {
       console.error(error);
