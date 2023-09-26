@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Pool } = require('pg');
 const cors = require("cors")
+const workout = require("./workout")
 
 
 app.use(express.json());
@@ -357,5 +358,13 @@ app.get("/checkUsernameAvailability", (req, res) => {
 app.post("/questionnaireSubmission", (req, res) => {
   const { questionnaire } = req.body;
 });
+
+app.post("/generateWorkout", (req, res) => {
+  workout.generateWorkout(req, res);
+})
+
+app.post("/workoutLog", (req, res) => {
+  workout.workoutLog(req, res);
+})
 
 module.exports = app;
