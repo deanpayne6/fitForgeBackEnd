@@ -89,6 +89,10 @@ app.use((req, res, next) => {
   });
 });
 
+// make login post request
+// remove console logs
+// create model folder and data models on both frontend and backend
+// avoid working with type ANY
 
 // Login
 app.get("/login", async (req, res) => {
@@ -96,9 +100,6 @@ app.get("/login", async (req, res) => {
   console.log(user)
   const password_check = user.password;
   console.log(password_check);
-
-  // const username = user.username;
-  // console.log(username);
 
   const email = user.email;
 
@@ -127,7 +128,6 @@ app.get("/login", async (req, res) => {
           // if passwords match, authenticate
           if (isMatch) {
             // Passwords match, you can proceed with authentication
-            console.log("hi")
             res.json({ authenticated: true });
             /*     CREATE TOKEN HERE    */
           } else {
