@@ -12,7 +12,7 @@ const workout = require("./workout")
 app.use(express.json());
 
 // importing user context
-const User = require("./model/user");
+const User = require("./models/user");
 
 //importing verifyToken
 
@@ -89,17 +89,16 @@ app.use((req, res, next) => {
   });
 });
 
-// make login post request
-// remove console logs
-// create model folder and data models on both frontend and backend
-// avoid working with type ANY
 
 // Login
-app.get("/login", async (req, res) => {
-  const user = req.query;
+app.post("/login", async (req, res) => {
+  const user = req.body;
   console.log(user)
   const password_check = user.password;
   console.log(password_check);
+
+  // const username = user.username;
+  // console.log(username);
 
   const email = user.email;
 
@@ -128,7 +127,8 @@ app.get("/login", async (req, res) => {
           // if passwords match, authenticate
           if (isMatch) {
             // Passwords match, you can proceed with authentication
-            res.json({ authenticated: true });
+            console.log("hi")
+            res.status(200).json({ authenticated: true });
             /*     CREATE TOKEN HERE    */
           } else {
             // Passwords don't match, authentication failed
@@ -195,32 +195,16 @@ app.use((req, res, next) => {
 });
 
 app.post("/register", async (req,res) => {
+  
   // receive user information
   const user = req.body;
   console.log(user);
+  
   //encrypt password
   const encryptedPassword = await bcrypt.hash(user.password, 10); 
-  //create token
-  // const token = jwt.sign(
-  //   { user_id: user._id, emailaddress },
-  //   process.env.TOKEN_KEY,
-  //   {
-  //     expiresIn: "2h",
-  //   }
-  // );
-  // //save user token
-  // user.token = token;
-  // // return new user
- 
-  // if (error) {
-  //   console.log(err);
-  // }
-  // else, return a successful run
-  //else { res.status(201).json(user); }
- 
 
   // unravel JSON object
-  const user_data = [user.username, user.email, user.first_name, user.last_name, encryptedPassword, user.userAge]
+  const user_data = [user.username, user.email, user.first_name, user.last_name, encryptedPassword, user.age]
   // insert statement
   const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -233,7 +217,8 @@ app.post("/register", async (req,res) => {
     }
     // else, return a successful run
     else {
-      return res.status(200).json({success: true}); // success
+      // 201 means creation is true
+      return res.status(201).json({success: true}); // success
     }
   });
 
@@ -300,11 +285,6 @@ app.post('/forgot-password', async (req, res) => {
 });
 
 // tentative db connection logic
-
-
-
-
-
 
 
 app.get("/checkEmailAvailability", (req, res) => {
