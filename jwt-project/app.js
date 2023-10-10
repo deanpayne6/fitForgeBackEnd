@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const { Pool } = require('pg');
 const cors = require("cors")
 const workout = require("./workout")
+const workoutLog = require("./workoutLog")
 
 
 app.use(express.json());
@@ -360,7 +361,7 @@ app.post("/generateWorkout", (req, res) => {
 })
 
 app.post("/workoutLog", (req, res) => {
-  workout.workoutLog(req, res);
+  workoutLog.workoutLog(req, res);
 })
 
 module.exports = app;
