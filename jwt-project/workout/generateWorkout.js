@@ -1,34 +1,40 @@
 require("dotenv").config();
 const mysql = require("mysql")
 
-function getSetInfo(settype, activitylevel_id){
+function getSetInfo(settype, activitylevel_id, musclegroup){
     sets = ""
     reps = ""
     rest = ""
+    side = "Side"
+    if(musclegroup == "Bicep" || musclegroup == "Tricep" || musclegroup == "Chest" || musclegroup == "Back" || musclegroup == "Shoulder")
+        side = "Arm"
+    else if(musclegroup == "Legs")
+        side = "Leg"
+
     if (settype == "Single"){
         if(activitylevel_id == 1){
             sets = "2"
-            reps = "10 Per Side"
+            reps = "10 Per " + side
             rest = "60 Seconds"
         }
         else if(activitylevel_id == 2){
             sets = "3"
-            reps = "10 Per Side"
+            reps = "10 Per " + side
             rest = "60 Seconds"
         }
         else if(activitylevel_id == 3){
             sets = "3"
-            reps = "15 Per Side"
+            reps = "15 Per " + side
             rest = "90 Seconds"
         }
         else if(activitylevel_id == 4){
             sets = "4"
-            reps = "10 Per Side"
+            reps = "10 Per " + side
             rest = "60 Seconds"
         }
         else if(activitylevel_id == 5){
             sets = "4"
-            reps = "15 Per Side"
+            reps = "15 Per " + side
             rest = "90 Seconds"
         }
     }
@@ -128,7 +134,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -139,7 +145,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -163,7 +174,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -174,7 +185,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -198,7 +214,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -209,7 +225,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -233,7 +254,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -244,7 +265,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -268,7 +294,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -279,7 +305,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -303,7 +334,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -314,7 +345,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -338,7 +374,7 @@ function generateWorkout(req, res){
                         for(let i = 0; i < workoutInput.length; i++){
                             for(let j = 0; j < result.length; j++){
                                 if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j].name)
+                                    tempArray.push(result[j])
                                 }
                             }
                             muscleArray.push(tempArray)
@@ -349,7 +385,12 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            workoutList.push(singleGroup[randomWorkout])
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+                            
+                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
+                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+
+                            workoutList.push(fullWorkout)
                             muscleArray[count].splice(randomWorkout, 1)
                             count++
                         }
@@ -384,7 +425,8 @@ function generateWorkout(req, res){
                                 count = 0
                             singleGroup = muscleArray[count]
                             randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id)
+                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+
                             fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
                             setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
 
