@@ -6,8 +6,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Pool } = require('pg');
 const cors = require("cors")
-const workout = require("./workout")
-const workoutLog = require("./workoutLog")
+const workout = require("./workout/generateWorkout")
+const workoutLog = require("./workout/workoutLog")
 
 
 app.use(express.json());
