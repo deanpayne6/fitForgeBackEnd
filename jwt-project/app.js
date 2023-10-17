@@ -18,6 +18,8 @@ const User = require("./model/user");
 
 const auth = require("./middleware/auth");
 
+console.log('hi');
+
 app.use(cors());
 
 // // Register
