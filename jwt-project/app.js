@@ -364,4 +364,8 @@ app.post("/workoutLog", (req, res) => {
   workoutLog.workoutLog(req, res);
 })
 
+app.post("/submitWorkout", (req, res) => {
+  workoutLog.submitWorkout(req, res)
+})
+
 module.exports = app;
