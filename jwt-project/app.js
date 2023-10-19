@@ -40,6 +40,9 @@ app.use((req, res, next) => {
   });
 });
 
+app.post("/", async (req, res) => {
+  res.send("THIS PAGE ACTIVE ONG FITFORGE GANG NO CAP ON A STACK TILL I DIE SWOOP")
+})
 
 // Login
 app.post("/login", async (req, res) => {
