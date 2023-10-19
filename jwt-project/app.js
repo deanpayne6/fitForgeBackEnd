@@ -19,7 +19,7 @@ const User = require("./model/user");
 const auth = require("./middleware/auth");
 
 app.use(cors());
-
+app.use(cookieParser());
 // // Register
 //   app.post("/register", async (req,  res) => {
 //     try {
@@ -248,7 +248,7 @@ app.post("/register", async (req,res) => {
 }
 */
 //request password
-/*
+
 app.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -292,7 +292,7 @@ app.post('/forgot-password', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
-*/
+
   // Guys, please send back proper responses for ALL the gets and post requests, there is no way for frontend to verify
   // unless you guys send responses back
     //no
