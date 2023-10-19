@@ -6,7 +6,7 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
     reps = ""
     rest = ""
     side = "Side"
-    if(musclegroup == "Bicep" || musclegroup == "Tricep" || musclegroup == "Chest" || musclegroup == "Back" || musclegroup == "Shoulder")
+    if(musclegroup == "Biceps" || musclegroup == "Triceps" || musclegroup == "Chest" || musclegroup == "Back" || musclegroup == "Shoulders")
         side = "Arm"
     else if(musclegroup == "Legs")
         side = "Leg"
