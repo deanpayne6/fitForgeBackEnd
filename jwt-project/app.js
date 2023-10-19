@@ -1,13 +1,17 @@
 require("dotenv").config();
 const express = require("express");
-const mysql = require("mysql")
+const mysql = require("mysql");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Pool } = require('pg');
-const cors = require("cors")
-const workout = require("./workout/generateWorkout")
-const workoutLog = require("./workout/workoutLog")
+const cors = require("cors");
+const workout = require("./workout/generateWorkout");
+const workoutLog = require("./workout/workoutLog");
+const authRoute = require("./routes/auth");
+const questionnaireRoute = require("./routes/questionnaire");
+const resetRoute = require("./routes/reset");
+
+
 
 
 app.use(express.json());
@@ -21,6 +25,9 @@ const auth = require("./middleware/auth");
 
 app.use(cors());
 
+app.use('/auth', authRoute);
+// app.use('/questionnaire', questionnaireRoute);
+// app.use('/reset', resetRoute);
 
 
 const pool = mysql.createPool({
@@ -49,12 +56,7 @@ app.get("/", async (req, res) => {
 // Login
 app.post("/login", async (req, res) => {
   const user = req.body;
-  console.log(user)
   const password_check = user.password;
-  console.log(password_check);
-
-  // const username = user.username;
-  // console.log(username);
 
   const email = user.email;
 
