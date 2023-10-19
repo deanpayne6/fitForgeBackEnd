@@ -143,6 +143,17 @@ app.get("/login", async (req, res) => {
 
     }
   });
+  //protected
+  app.get("/protected", authorization, (req, res) => {
+    return res.json({ user: { id: req.userId, role: req.userRole } });
+  });
+ //log out
+  app.get("/logout", authorization, (req, res) => {
+    return res
+      .clearCookie("access_token")
+      .status(200)
+      .json({ message: "Successfully logged out 😏 🍀" });
+  });
 
   // compare password to hashed password for said username
 
