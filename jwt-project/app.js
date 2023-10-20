@@ -107,9 +107,7 @@ app.get("/checkUsernameAvailability", (req, res) => {
   });
 });
 
-app.post("/questionnaireSubmission", (req, res) => {
-  const { questionnaire } = req.body;
-});
+
 
 app.post("/generateWorkout", (req, res) => {
   generateWorkout.generateWorkout(req, res);

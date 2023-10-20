@@ -78,6 +78,7 @@ async function checkPass(email, password) {
   // compare the passwords
   const hi = await bcrypt.compare(password, hashed_pass);
   return hi;
+  
 }
 
 async function checkData(data, data_name) {
