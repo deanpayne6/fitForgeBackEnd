@@ -5,7 +5,8 @@ const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const workout = require("./workout/generateWorkout");
+const updateWorkout = require("./workout/updateWorkout")
+const generateWorkout = require("./workout/generateWorkout");
 const workoutLog = require("./workout/workoutLog");
 const authRoute = require("./routes/auth");
 const questionnaireRoute = require("./routes/questionnaire");
@@ -113,7 +114,7 @@ app.post("/questionnaireSubmission", (req, res) => {
 });
 
 app.post("/generateWorkout", (req, res) => {
-  workout.generateWorkout(req, res);
+  generateWorkout.generateWorkout(req, res);
 })
 
 app.post("/workoutLog", (req, res) => {
@@ -122,6 +123,10 @@ app.post("/workoutLog", (req, res) => {
 
 app.post("/submitWorkout", (req, res) => {
   workoutLog.submitWorkout(req, res)
+})
+
+app.post("/updateWorkout", (req, res) => {
+  updateWorkout.updateWorkout(req, res)
 })
 
 module.exports = app;
