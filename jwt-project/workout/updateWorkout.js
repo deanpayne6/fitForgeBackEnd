@@ -1,6 +1,6 @@
 require("dotenv").config();
 const mysql = require("mysql")
-const generateWorkout = require("./workout/generateWorkout")
+const generateWorkout = require("./generateWorkout")
 
 function updateWorkout(req, res){
     revisedWorkout = []
