@@ -25,7 +25,7 @@ const auth = require("./middleware/auth");
 app.use(cors());
 
 app.use('/auth', authRoute);
-// app.use('/questionnaire', questionnaireRoute);
+app.use('/questionnaire', questionnaireRoute);
 // app.use('/reset', resetRoute);
 
 
