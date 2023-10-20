@@ -13,7 +13,6 @@ const secretKey = 'luisdumb'
 router.post('/login', async (req, res) => {
   const password_check = req.body.password;
   const email = req.body.email;
-  const query = "SELECT * FROM users where emailaddress = ?";
   
   const userExists = await checkUser(email);
   
@@ -41,6 +40,24 @@ router.post('/login', async (req, res) => {
 
 });
 
+router.post('/register', async (req, res) => {
+  // receive user information
+  const user = req.body;  
+  const encryptedPassword = await bcrypt.hash(user.password, 10); 
+
+  // check for duplicates
+  if (await checkData(user.username, "username") | await checkData(user.email, "emailaddress")){
+    return res.status(400).json({"status": "400"});
+  }
+
+  const user_data = [user.username, user.email, user.first_name, user.last_name, encryptedPassword, user.age]
+
+  const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
+
+  const insert = db.query(query, user_data);
+
+  return res.status(201).json({"status": "201"})
+});
 
 async function checkUser(email) {
   const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
@@ -62,5 +79,16 @@ async function checkPass(email, password) {
   const hi = await bcrypt.compare(password, hashed_pass);
   return hi;
 }
+
+async function checkData(data, data_name) {
+  let query = "SELECT " + data_name + " FROM users WHERE " + data_name + " = '" + data + "'";
+  const result = await db.query(query);
+  if (result.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 module.exports = router;
