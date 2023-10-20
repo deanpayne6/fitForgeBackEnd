@@ -453,4 +453,4 @@ function generateWorkout(req, res){
     })
 }
 
-module.exports = {generateWorkout};
+module.exports = {generateWorkout, getSetInfo};
