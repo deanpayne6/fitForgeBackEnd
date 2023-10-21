@@ -125,4 +125,8 @@ app.post("/updateWorkout", (req, res) => {
   updateWorkout.updateWorkout(req, res)
 })
 
+app.post("/sendMuscleSwap", (req, res) => {
+  updateWorkout.sendMuscleSwap(req, res)
+})
+
 module.exports = app;
