@@ -47,4 +47,63 @@ function updateWorkout(req, res){
     })
 }
 
-module.exports = {updateWorkout};
+function sendMuscleSwap(req, res){
+    char = ","
+    substring = ""
+    equipmentlevel_id = 0
+    muscleList = []
+    target = ""
+    var con = mysql.createConnection({
+        host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
+        user: "fitforge",
+        password: "fitforge",
+        database: "fitforge"
+    });
+
+    const {workoutName, username} = req.body
+    const query1 = "SELECT * FROM users where username = ?"
+    const query2 = "SELECT * FROM exercises where name = ?"
+    const query3 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
+    con.connect(function(err){
+        if (err) throw err;
+        con.query(query1, username, function (err, result){
+            if (err) throw err;
+            if(result.length > 0){
+                equipmentlevel_id = result[0].equipmentlevel_id
+                con.query(query2, workoutName, function(err, result){
+                    if (err) throw err;
+                    if(result.length > 0){
+                        workoutInfo = result[0]
+                        index = workoutInfo.targetmuscles.indexOf(char)
+                        if(index > 0){
+                            substring = workoutInfo.targetmuscles.substr(0, index-1)
+                            target = substring
+                        }
+                        else{
+                            target = workoutInfo.targetmuscles
+                        }
+                        queryData = [workoutInfo.musclegroup, equipmentlevel_id]
+                        con.query(query3, queryData, function(err, result){
+                            if (err) throw err;
+                            for(let i = 0; i < result.length; i++){
+                                if(result[i].name != workoutName){
+                                    check = result[i].targetmuscles.includes(target)
+                                    if(check == true){
+                                        muscleList.push(result[i].name)
+                                    }
+                                }
+                            }
+                            res.status(200).json(muscleList)
+                        })
+                    }
+                    else   
+                        res.status(400).send("Invalid Workout Name")
+                })
+            }
+            else
+                res.status(400).send("Invalid Username")
+        })
+    })
+}
+
+module.exports = {updateWorkout, sendMuscleSwap};
