@@ -110,6 +110,7 @@ router.post('/updateEmail', async (req, res) => {
 });
 
 router.post('/updatePassword', async (req, res) => {
+  //Still has isssue with sql query.
   //check password
   const password_check = req.body.password;
   const email = req.body.email;
