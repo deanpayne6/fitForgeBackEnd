@@ -1,2 +1,2 @@
-const secretKey = 'luisisdumb';
-module.exports = secretKey
+const secretKey = 'fitForgeSecretKey';
+module.exports = secretKey;
