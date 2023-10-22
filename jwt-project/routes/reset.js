@@ -9,17 +9,53 @@ const nodemailer = require('nodemailer');
 
 
 //passwordRecovery
+router.post('/passwordRecovery', async (req, res) =>{
 
+});
 //sendEmail
 
 //ChangePassword
+router.post('/changePassword', async (req, rex)=>{
+  
+  const email = req.body.email;
+  
+    const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
+    checkUser(email);
+        if (err) { 
+            res.send(err); 
+        } else { 
+            user.changePassword(req.body.oldpassword,  
+            req.body.newpassword, function (err) { 
+                if (err) { 
+                    res.send(err); 
+                } else { 
+                    
+                    res.send('Successfully changed password') 
+                } 
+            }); 
+        } 
+    }); 
 
+//verifyToken
+router.get('/verify/:token', async (req, res) => {
+    const {token} = req.params; 
+  
+    // Verifying the JWT token  
+    jwt.verify(token, secretKey, function(err, decoded) { 
+        if (err) { 
+            console.log(err); 
+            res.send("Email verification failed, possibly the link is invalid or expired"); 
+        } 
+        else { res.send("Email verifified successfully"); 
+        } 
+    }); 
+});
 // Email Verification
-async function tokenSender(email){
+async function verify_email(email){
     const transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
-            user: secure_configuration.EMAIL_USERNAME, 
+            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
             pass: secure_configuration.PASSWORD 
         } 
     }); 
@@ -54,6 +90,7 @@ async function tokenSender(email){
         console.log(info); 
     }); 
 }
+
 
 async function checkUser(email) {
     const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
