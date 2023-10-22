@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 const  verifyToken  = require("../middleware/auth");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
-
-
 const user = require("../models/user");
 
 router.get('/', (req, res) => {
