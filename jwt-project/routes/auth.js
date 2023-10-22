@@ -75,6 +75,79 @@ router.post('/register', async (req, res) => {
   return res.status(201).json({"status": "201"})
 });
 
+router.post('/updateEmail', async (req, res) => {
+  //check password
+  const password_check = req.body.password;
+  const email = req.body.email;
+  const newEmail = req.body.newEmail;
+  const updateEmailQuery = "UPDATE users SET emailaddress = ? WHERE user_id = ?";
+
+  const userExists = await checkUser(email);
+  
+  //check if the email is in use
+  if(!checkUser(newEmail))
+    return res.status(404).send("Email is already in use.");
+
+  //check if the user exist in db
+  if (!userExists) {
+    return res.status(404).send("Invalid user.");
+  }
+
+  const passwordMatch = await checkPass(email, password_check);
+
+  if (!passwordMatch) {
+    return res.status(404).send("Invalid password.")
+  }
+  //if the password is correct update to a new email
+  const useridquery = "SELECT user_id FROM users where emailaddress = ?";
+  let user_id = await db.query(useridquery, email);
+  try {
+    
+  await db.query(updateEmailQuery, [newEmail, user_id]);
+  user_id = user_id[0].user_id; // Extract the user_id from the object  
+  console.log(`Email address updated successfully for user with ID ${user_id}`);
+  
+} catch (error) {console.error("Error updating email address:", error); }
+});
+
+router.post('/updatePassword', async (req, res) => {
+  //check password
+  const password_check = req.body.password;
+  const email = req.body.email;
+  const newPassword = req.body.newEmail;
+  const updatePasswordQuery = 'UPDATE users SET password_hash = ? WHERE emailaddress = ?';
+
+  const userExists = await checkUser(email);
+  
+  //check if the user exist in db
+  if (!userExists) {
+    return res.status(404).send("Invalid user.");
+  }
+
+  const passwordMatch = await checkPass(email, password_check);
+
+  if (!passwordMatch) {
+    return res.status(404).send("Invalid password.")
+  }
+  //if the password is correct update to a new password
+
+  const new_password_hash = await bcrypt.hash(newPassword, 10); //create hash of new password
+
+  const useridquery = "SELECT user_id FROM users where emailaddress = ?";
+  
+  let user_id = await db.query(useridquery, email);
+  user_id = user_id[0].user_id; // Extract the user_id from the object
+  await db.query(updatePasswordQuery, [hashedPassword, email]);
+  try {
+    console.log(`Password updated successfully for user with email: ${email}`);
+    return res.status(200).json({ message: 'Password updated successfully.' });
+  } catch (error) {
+    console.error('Error updating password:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 async function checkUser(email) {
   const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
   if (result.length > 0) {
