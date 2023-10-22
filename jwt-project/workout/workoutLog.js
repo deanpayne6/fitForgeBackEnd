@@ -96,7 +96,7 @@ function submitWorkout(req, res){
             })
           })
         }
-        res.status(200).send("Workout Submitted Successfully")
+        res.status(200)
       }
       else
         res.status(400).send("Invalid Username")
