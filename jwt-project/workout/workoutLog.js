@@ -1,6 +1,18 @@
 require("dotenv").config();
 const mysql = require("mysql")
 
+function setWorkoutInfo(result){
+  let workoutInfo = {
+    workoutName: result.name,
+    workoutMuscleGroup: result.musclegroup,
+    workoutSets: result.sets,
+    workoutReps: result.reps,
+    workoutRest: result.rest,
+    workoutRpe: result.rpe
+  }
+  return workoutInfo
+}
+
 //http://localhost:3200/workoutLog
 function workoutLog(req,res) {
   user_id = 0
@@ -27,7 +39,7 @@ function workoutLog(req,res) {
         con.query(query2, queryData1, function (err, result) {
           if (err) throw err;
           for(let i = 0; i < result.length; i++){
-            tempData = [result[i].name, result[i].musclegroup, result[i].sets, result[i].reps, result[i].rest, result[i].rpe]
+            tempData = setWorkoutInfo(result[i])
             tempLog.push(tempData)
           }
           sortedLog.push(tempLog)
@@ -35,7 +47,7 @@ function workoutLog(req,res) {
           con.query(query2, queryData2, function (err, result) {
             if (err) throw err;
             for(let i = 0; i < result.length; i++){
-              tempData = [result[i].name, result[i].musclegroup, result[i].sets, result[i].reps, result[i].rest, result[i].rpe]
+              tempData = setWorkoutInfo(result[i])
               tempLog.push(tempData)
             }
             sortedLog.push(tempLog)
@@ -43,7 +55,7 @@ function workoutLog(req,res) {
             con.query(query2, queryData3, function (err, result) {
               if (err) throw err;
               for(let i = 0; i < result.length; i++){
-                tempData = [result[i].name, result[i].musclegroup, result[i].sets, result[i].reps, result[i].rest, result[i].rpe]
+                tempData = setWorkoutInfo(result[i])
                 tempLog.push(tempData)
               }
               sortedLog.push(tempLog)
