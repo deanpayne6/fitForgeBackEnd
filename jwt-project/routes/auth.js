@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
 
   const query = "insert into fitforge.users (username, emailaddress, firstname, lastname, password_hash, age) VALUES (?, ?, ?, ?, ?, ?)";
 
-  const insert = db.query(query, user_data);
+  const insert = await db.query(query, user_data);
 
   return res.status(201).json({"status": "201"})
 });

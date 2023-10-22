@@ -22,6 +22,14 @@ function query(sql, values) {
   });
 }
 
+function queryUserData(dataType, email) {
+  
+  const query = `SELECT ${dataType} FROM users WHERE emailaddress = '${email}'`;
+  const results = this.query(query);
+  return results;
+}
+
 module.exports = {
-  query
+  query,
+  queryUserData
 };

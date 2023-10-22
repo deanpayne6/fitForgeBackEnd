@@ -9,7 +9,7 @@ const workoutLog = require("./workout/workoutLog");
 const authRoute = require("./routes/auth");
 const questionnaireRoute = require("./routes/questionnaire");
 const resetRoute = require("./routes/reset");
-
+const getRoute = require("./routes/get");
 
 
 app.use(express.json());
@@ -25,6 +25,7 @@ app.use(cors());
 
 app.use('/auth', authRoute);
 app.use('/questionnaire', questionnaireRoute);
+app.use('/get', getRoute);
 // app.use('/reset', resetRoute);
 
 
@@ -123,6 +124,10 @@ app.post("/submitWorkout", (req, res) => {
 
 app.post("/updateWorkout", (req, res) => {
   updateWorkout.updateWorkout(req, res)
+})
+
+app.post("/sendMuscleSwap", (req, res) => {
+  updateWorkout.sendMuscleSwap(req, res)
 })
 
 module.exports = app;
