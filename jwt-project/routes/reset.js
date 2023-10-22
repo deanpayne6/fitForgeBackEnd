@@ -7,6 +7,8 @@ const router = express.Router();
 const secretKey = require('../config/secretKey');
 const nodemailer = require('nodemailer'); 
 
+secure_configuration.EMAIL_USERNAME = 'help.fitforge@gmail.com';
+secure_configuration.PASSWORD = 'mciw shgs nflh soyn';
 
 //PasswordRecovery
 router.post('/sendEmailPasswordRecovery', async (req, res) =>{
@@ -26,7 +28,7 @@ router.post('/sendEmailPasswordRecovery', async (req, res) =>{
     const mailConfigurations = { 
       
         // Send FitForge Support Email
-        from: 'fitForge.support@gmail.com', 
+        from: secure_configuration.EMAIL_USERNAME, 
       
         to: email, 
       
@@ -113,7 +115,7 @@ async function verify_email(email){
     const mailConfigurations = { 
       
         // Send FitForge Support Email
-        from: 'fitForge.support@gmail.com', 
+        from: secure_configuration.EMAIL_USERNAME, 
       
         to: email, 
       
