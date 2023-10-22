@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const db = require("../db_connect");
 const jwt = require("jsonwebtoken");
+const verifyToken = require('../middleware/auth');
+
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -38,6 +40,13 @@ router.post('/login', async (req, res) => {
     }
   });
 
+});
+
+// Protected route requiring authentication
+router.get('/protected', verifyToken, (req, res) => {
+  // Access user information from req.user if needed
+  const userId = req.user.user_id;
+  res.status(200).json({ userId });
 });
 
 router.post('/logout', (req, res) => {

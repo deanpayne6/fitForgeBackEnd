@@ -1,34 +1,27 @@
 const jwt = require("jsonwebtoken");
-
+const { secretKey } = require('./routes/auth'); // Import your secret key from auth
 const config = process.env;
 
 
-const { secretKey } = require('./routes/auth'); // Import your secret key fromauth
 
-// Middleware to verify JWT token
+
+
 const verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
-
+// Error Message if there is no token
   if (!token) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+    return res.status(401).json({ message: 'Error. No token was given.' });
   }
 
   try {
     const decoded = jwt.verify(token, secretKey);
-    req.user = decoded; // Attach user information to the request object
+    req.user = decoded; // Attach user information 
     next(); // pass it only if the token is correct
   } catch (error) {
     return res.status(401).json({ message: 'Invalid token.' });
   }
 };
 
-// Protected route requiring authentication
-app.get('/protected', verifyToken, (req, res) => {
-  // Access user information from req.user if needed
-  const userId = req.user.user_id;
-  // Perform actions specific to the protected route
-  res.status(200).json({ message: `Welcome, user with ID: ${userId}! This is a protected route.` });
-});
 
 
 module.exports = verifyToken;
