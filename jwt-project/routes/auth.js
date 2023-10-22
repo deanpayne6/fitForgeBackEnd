@@ -6,6 +6,7 @@ const  verifyToken  = require("../middleware/auth");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
 const secretKey = require('../config/secretKey');
+const user = require("../models/user");
 
 
 router.get('/', (req, res) => {
@@ -29,9 +30,12 @@ router.post('/login', async (req, res) => {
     return res.status(404).send("Invalid password.")
   }
 
+  const user_data = await db.getUser(email);
+  console.log(user_data);
+
   const useridquery = "SELECT user_id FROM users where emailaddress = ?";
   let user_id = await db.query(useridquery, email);
-  user_id = (user_id[0].user_id)
+  user_id = (user_id[0].user_id);
 
   const token = jwt.sign({ user_id }, secretKey);
   return res
@@ -71,7 +75,8 @@ router.post('/register', async (req, res) => {
 
   const insert = await db.query(query, user_data);
 
-  return res.status(201).json({"status": "201"})
+  return res.status(201).json({"status": "201"});
+  
 });
 
 async function checkUser(email) {
