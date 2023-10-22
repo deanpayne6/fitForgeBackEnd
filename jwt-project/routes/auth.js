@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const db = require("../db_connect");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const user = require("../models/user");
 
 router.get('/', (req, res) => {
   res.send("Happy New Year");
@@ -26,9 +27,12 @@ router.post('/login', async (req, res) => {
     return res.status(404).send("Invalid password.")
   }
 
+  const user_data = await db.getUser(email);
+  console.log(user_data);
+
   const useridquery = "SELECT user_id FROM users where emailaddress = ?";
   let user_id = await db.query(useridquery, email);
-  user_id = (user_id[0].user_id)
+  user_id = (user_id[0].user_id);
 
   jwt.sign({ user_id }, secretKey, {expiresIn: '1h'}, (err, token) => {
     if (err) {
@@ -56,7 +60,8 @@ router.post('/register', async (req, res) => {
 
   const insert = await db.query(query, user_data);
 
-  return res.status(201).json({"status": "201"})
+  return res.status(201).json({"status": "201"});
+  
 });
 
 async function checkUser(email) {

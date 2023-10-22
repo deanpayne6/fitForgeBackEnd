@@ -27,9 +27,24 @@ function queryUserData(dataType, email) {
   const query = `SELECT ${dataType} FROM users WHERE emailaddress = '${email}'`;
   const results = this.query(query);
   return results;
+  
+}
+
+async function getUser(email) {
+  const query = `
+    SELECT
+    username, first_name, last_name, age
+    FROM users
+    WHERE emailaddress = '${email}'
+  `
+  const results = await this.query(query);
+
+  return results;
+
 }
 
 module.exports = {
   query,
-  queryUserData
+  queryUserData,
+  getUser
 };
