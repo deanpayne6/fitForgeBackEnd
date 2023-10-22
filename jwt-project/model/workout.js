@@ -1,4 +1,3 @@
-
 class Workout {
     constructor(workout, muscle_group, sets, reps, rest, target) {
       this.workout = workout,
@@ -9,4 +8,3 @@ class Workout {
       this.target == target
     }
   }
-
