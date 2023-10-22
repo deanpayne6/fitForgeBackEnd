@@ -69,7 +69,7 @@ function sendMuscleSwap(req, res){
         database: "fitforge"
     });
 
-    const {workoutName, username, workoutList} = req.body
+    const {workoutName, username} = req.body
     const query1 = "SELECT * FROM users where username = ?"
     const query2 = "SELECT * FROM exercises where name = ?"
     const query3 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
@@ -96,17 +96,9 @@ function sendMuscleSwap(req, res){
                             if (err) throw err;
                             for(let i = 0; i < result.length; i++){
                                 if(result[i].name != workoutName){
-                                    counter = 0
-                                    for(let j = 0; j < workoutList.length; j++){
-                                        if(result[i].name != workoutList[j].workoutName){
-                                            counter++
-                                        }
-                                    }
-                                    if(counter == workoutList.length){
-                                        check = result[i].targetmuscles.includes(target)
-                                        if(check == true){
-                                            muscleList.push(result[i].name)
-                                        }
+                                    check = result[i].targetmuscles.includes(target)
+                                    if(check == true){
+                                        muscleList.push(result[i].name)
                                     }
                                 }
                             }
