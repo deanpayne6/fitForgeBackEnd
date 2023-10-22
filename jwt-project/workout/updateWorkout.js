@@ -2,6 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql")
 const generateWorkout = require("./generateWorkout")
 
+//http://localhost:3200/updateWorkout
 function updateWorkout(req, res){
     revisedWorkout = []
     activitylevel_id = 0
@@ -47,6 +48,7 @@ function updateWorkout(req, res){
     })
 }
 
+//http://localhost:3200/sendMuscleSwap
 function sendMuscleSwap(req, res){
     char = ","
     substring = ""
