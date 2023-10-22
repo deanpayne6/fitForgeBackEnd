@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { secretKey } = require('../routes/auth');
+const secretKey = require('../config/secretKey');
 const config = process.env;
 
 

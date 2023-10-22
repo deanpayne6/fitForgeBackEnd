@@ -5,14 +5,13 @@ const jwt = require("jsonwebtoken");
 const  verifyToken  = require("../middleware/auth");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
-
+const secretKey = require('../config/secretKey');
 
 
 router.get('/', (req, res) => {
   res.send("Happy New Year");
 });
 
-const secretKey = 'luisdumb'
 
 router.post('/login', async (req, res) => {
   const password_check = req.body.password;
@@ -102,7 +101,7 @@ router.post('/updateEmail', async (req, res) => {
   const useridquery = "SELECT user_id FROM users where emailaddress = ?";
   let user_id = await db.query(useridquery, email);
   try {
-    
+
   await db.query(updateEmailQuery, [newEmail, user_id]);
   user_id = user_id[0].user_id; // Extract the user_id from the object  
   console.log(`Email address updated successfully for user with ID ${user_id}`);
