@@ -5,14 +5,13 @@ const jwt = require("jsonwebtoken");
 const  verifyToken  = require("../middleware/auth");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
-
+const secretKey = require('../config/secretKey');
 
 
 router.get('/', (req, res) => {
   res.send("Happy New Year");
 });
 
-const secretKey = 'luisdumb'
 
 router.post('/login', async (req, res) => {
   const password_check = req.body.password;
