@@ -98,6 +98,48 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
     return setInfo
 }
 
+function getWorkout(length, muscleArray, workoutInput, activitylevel_id){
+    workoutList = []
+    for(let i = 0; i < length; i++){
+        if(count == workoutInput.length)
+            count = 0
+        singleGroup = muscleArray[count]
+        randomWorkout = Math.floor(Math.random() * singleGroup.length)
+        setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+        
+        let fullWorkout = {
+            workoutMuscleGroup: singleGroup[randomWorkout].musclegroup,
+            workoutName: singleGroup[randomWorkout].name,
+            workoutSets: setInfo[0],
+            workoutReps: setInfo[1],
+            workoutRest: setInfo[2],
+            workoutTarget: singleGroup[randomWorkout].targetmuscles,
+            workoutLink: singleGroup[randomWorkout].videourl,
+        }
+
+        workoutList.push(fullWorkout)
+        muscleArray[count].splice(randomWorkout, 1)
+        count++
+    }
+    return workoutList
+}
+
+function getWorkoutLength(workoutLength, workoutInput){
+    if(workoutLength == "short" && workoutInput.length == 1){
+        length = 3
+    }
+    else if((workoutLength == "short" && workoutInput.length == 2) || (workoutLength == "medium" && workoutInput.length == 1)){
+        length = 4
+    }
+    else if((workoutLength == "medium" && workoutInput.length >= 2) || (workoutLength == "long" && workoutInput.length == 1)){
+        length = 6
+    }
+    else if((workoutLength == "long" && workoutInput.length >= 2)){
+        length = 8
+    }
+    return length
+}
+
 //http://localhost:3200/generateWorkout
 function generateWorkout(req, res){
     const {workoutInput, workoutLength, username} = req.body;
@@ -124,328 +166,29 @@ function generateWorkout(req, res){
             if (result.length > 0){
                 equipmentlevel_id = result[0].equipmentlevel_id
                 activitylevel_id = result[0].activitylevel_id
-
-                //Short Workout Length, 1 Workout Chosen
-                if((workoutLength == "short") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
+                const query2 = "SELECT * FROM exercises WHERE equipmentlevel_id = ?"
+                con.query(query2, equipmentlevel_id, function (err, result){
+                    if (err) throw err;
+                    for(let i = 0; i < workoutInput.length; i++){
+                        for(let j = 0; j < result.length; j++){
+                            if(result[j].musclegroup == workoutInput[i]){
+                                tempArray.push(result[j])
                             }
-                            muscleArray.push(tempArray)
-                            tempArray = []
                         }
-                        for(let i = 0; i < 3; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+                        muscleArray.push(tempArray)
+                        tempArray = []
+                    }
+                    workoutList = getWorkout(getWorkoutLength(workoutLength, workoutInput), muscleArray, workoutInput, activitylevel_id)
 
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Short Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "short") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 4; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 1 Workout Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 4; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 3 Workouts Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-                
-                //Long Workout Length, 1 Workout Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Long Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 8; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Long Workout Length, 3 Workouts Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        for(let i = 0; i < 8; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-                else
-                    res.status(400).send("Invalid Input(s)")
+                    for(let k = 0; k < workoutList.length; k++){
+                        if(workoutList[k] == null)
+                            nullCounter++
+                    }
+                    if(nullCounter > 0)
+                        res.status(400).send("Invalid Muscle Group(s)")
+                    else
+                        res.status(200).json(workoutList)
+                })
             }
             else
                 res.status(400).send("Invalid Username")

@@ -1,23 +1,38 @@
 const jwt = require("jsonwebtoken");
-
+const { secretKey } = require('../routes/auth');
 const config = process.env;
 
-const verifyToken = (req, res, next) => {
-  const token =
-    req.body.token || req.query.token || req.headers["x-access-token"];
 
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.access_token;
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.status(401).json({ message: 'Access denied. No token provided.' });
   }
   try {
-    const decoded = jwt.verify(token, config.TOKEN_KEY);
-    req.user = decoded;
-  } catch (err) {
-    return res.status(401).send("Invalid Token");
+    const data = jwt.verify(token, secretKey);
+    req.userId = data.id;
+    return next();
+  } catch (error) {
+      return res.status(401).json({ message: 'Invalid token.' });
   }
-  return next();
 };
+/*
+const verifyToken = (req, res, next) => {
+  const token = req.header('Authorization');
 
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. No token was passed.' });
+  }
+
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token.' });
+    }
+    req.user = decoded;
+    next();
+  });
+};
+*/
 /*
 app.get("/user/verifyToken", (req, res) => {
 let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
