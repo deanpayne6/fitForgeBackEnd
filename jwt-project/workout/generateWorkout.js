@@ -98,7 +98,7 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
     return setInfo
 }
 
-function getWorkout(length, muscleArray, workoutInput){
+function getWorkout(length, muscleArray, workoutInput, activitylevel_id){
     workoutList = []
     for(let i = 0; i < length; i++){
         if(count == workoutInput.length)
@@ -122,6 +122,22 @@ function getWorkout(length, muscleArray, workoutInput){
         count++
     }
     return workoutList
+}
+
+function getWorkoutLength(workoutLength, workoutInput){
+    if(workoutLength == "short" && workoutInput.length == 1){
+        length = 3
+    }
+    else if((workoutLength == "short" && workoutInput.length == 2) || (workoutLength == "medium" && workoutInput.length == 1)){
+        length = 4
+    }
+    else if((workoutLength == "medium" && workoutInput.length >= 2) || (workoutLength == "long" && workoutInput.length == 1)){
+        length = 6
+    }
+    else if((workoutLength == "long" && workoutInput.length >= 2)){
+        length = 8
+    }
+    return length
 }
 
 //http://localhost:3200/generateWorkout
@@ -150,232 +166,29 @@ function generateWorkout(req, res){
             if (result.length > 0){
                 equipmentlevel_id = result[0].equipmentlevel_id
                 activitylevel_id = result[0].activitylevel_id
-
-                //Short Workout Length, 1 Workout Chosen
-                if((workoutLength == "short") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
+                const query2 = "SELECT * FROM exercises WHERE equipmentlevel_id = ?"
+                con.query(query2, equipmentlevel_id, function (err, result){
+                    if (err) throw err;
+                    for(let i = 0; i < workoutInput.length; i++){
+                        for(let j = 0; j < result.length; j++){
+                            if(result[j].musclegroup == workoutInput[i]){
+                                tempArray.push(result[j])
                             }
-                            muscleArray.push(tempArray)
-                            tempArray = []
                         }
-                        workoutList = getWorkout(3, muscleArray, workoutInput)
+                        muscleArray.push(tempArray)
+                        tempArray = []
+                    }
+                    workoutList = getWorkout(getWorkoutLength(workoutLength, workoutInput), muscleArray, workoutInput, activitylevel_id)
 
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Short Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "short") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(4, muscleArray, workoutInput)
-
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 1 Workout Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(4, muscleArray, workoutInput)
-
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(6, muscleArray, workoutInput)
-                        
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Medium Workout Length, 3 Workouts Chosen
-                else if((workoutLength == "medium") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(6, muscleArray, workoutInput)
-                        
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-                
-                //Long Workout Length, 1 Workout Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 1)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(6, muscleArray, workoutInput)
-                        
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Long Workout Length, 2 Workouts Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 2)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(8, muscleArray, workoutInput)
-                        
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-
-                //Long Workout Length, 3 Workouts Chosen
-                else if((workoutLength == "long") && (workoutInput.length == 3)){
-                    const query2 = "SELECT * FROM exercises WHERE (musclegroup = ? + ? + ?) and (equipmentlevel_id = ?)"
-                    const muscleGroup = [workoutInput[0], workoutInput[1], workoutInput[2], equipmentlevel_id]
-                    con.query(query2, muscleGroup, function (err, result){
-                        if (err) throw err;
-                        for(let i = 0; i < workoutInput.length; i++){
-                            for(let j = 0; j < result.length; j++){
-                                if(result[j].musclegroup == workoutInput[i]){
-                                    tempArray.push(result[j])
-                                }
-                            }
-                            muscleArray.push(tempArray)
-                            tempArray = []
-                        }
-                        workoutList = getWorkout(8, muscleArray, workoutInput)
-                        
-                        for(let k = 0; k < workoutList.length; k++){
-                            if(workoutList[k] == null)
-                                nullCounter++
-                        }
-                        if(nullCounter > 0)
-                            res.status(400).send("Invalid Muscle Group(s)")
-                        else
-                            res.status(200).json(workoutList)
-                    })
-                }
-                else
-                    res.status(400).send("Invalid Input(s)")
+                    for(let k = 0; k < workoutList.length; k++){
+                        if(workoutList[k] == null)
+                            nullCounter++
+                    }
+                    if(nullCounter > 0)
+                        res.status(400).send("Invalid Muscle Group(s)")
+                    else
+                        res.status(200).json(workoutList)
+                })
             }
             else
                 res.status(400).send("Invalid Username")
