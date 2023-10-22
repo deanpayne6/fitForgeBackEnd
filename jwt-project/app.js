@@ -10,7 +10,7 @@ const authRoute = require("./routes/auth");
 const questionnaireRoute = require("./routes/questionnaire");
 const resetRoute = require("./routes/reset");
 const getRoute = require("./routes/get");
-
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
 
@@ -23,6 +23,7 @@ const auth = require("./middleware/auth");
 
 app.use(cors());
 
+app.use(cookieParser());
 app.use('/auth', authRoute);
 app.use('/questionnaire', questionnaireRoute);
 app.use('/get', getRoute);

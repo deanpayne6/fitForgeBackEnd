@@ -40,6 +40,13 @@ router.post('/login', async (req, res) => {
 
 });
 
+router.post('/logout', (req, res) => {
+  // Clear the token cookie
+  res.clearCookie('token', { httpOnly: true, sameSite: 'none', secure: process.env.NODE_ENV === 'production' });
+
+  res.status(200).json({ message: 'Logout successful' });
+});
+
 router.post('/register', async (req, res) => {
   // receive user information
   const user = req.body;  
