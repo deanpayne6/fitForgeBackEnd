@@ -98,7 +98,7 @@ function sendMuscleSwap(req, res){
                                 if(result[i].name != workoutName){
                                     counter = 0
                                     for(let j = 0; j < workoutList.length; j++){
-                                        if(result[i].name != workoutList[j].name){
+                                        if(result[i].name != workoutList[j].workoutName){
                                             counter++
                                         }
                                     }
