@@ -2,7 +2,11 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const db = require("../db_connect");
 const jwt = require("jsonwebtoken");
+const  verifyToken  = require("../middleware/auth");
 const router = express.Router();
+const cookieParser = require("cookie-parser");
+
+
 
 router.get('/', (req, res) => {
   res.send("Happy New Year");
@@ -30,20 +34,26 @@ router.post('/login', async (req, res) => {
   let user_id = await db.query(useridquery, email);
   user_id = (user_id[0].user_id)
 
-  jwt.sign({ user_id }, secretKey, {expiresIn: '1h'}, (err, token) => {
-    if (err) {
-      res.status(500).json({ error: 'Failed to create token' });
-    } else {
-      res.status(201).json({ token });
-    }
+  const token = jwt.sign({ user_id }, secretKey);
+  return res
+    .cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    })
+    .status(200)
+    .json({message: "Logged in was successfull" });
   });
 
+router.post('/logout', verifyToken, (req, res) => {
+  return res
+    .clearCookie("access_token")
+    .status(200)
+    .json({ message: "Logged off" });
 });
 
-router.post('/logout', (req, res) => {
-  // Clear the token cookie
-  res.clearCookie('token', { httpOnly: true, sameSite: 'none', secure: process.env.NODE_ENV === 'production' });
-  res.status(200).json({ message: 'Logout successful' });
+router.get('/protected', verifyToken, (req, res) => {
+  const userId = req.user.user_id; // Access the user ID from the request object
+  res.json({ userId});
 });
 
 router.post('/register', async (req, res) => {
