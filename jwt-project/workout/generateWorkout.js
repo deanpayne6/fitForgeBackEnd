@@ -98,6 +98,32 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
     return setInfo
 }
 
+function getWorkout(length, muscleArray, workoutInput){
+    workoutList = []
+    for(let i = 0; i < length; i++){
+        if(count == workoutInput.length)
+            count = 0
+        singleGroup = muscleArray[count]
+        randomWorkout = Math.floor(Math.random() * singleGroup.length)
+        setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
+        
+        let fullWorkout = {
+            workoutMuscleGroup: singleGroup[randomWorkout].musclegroup,
+            workoutName: singleGroup[randomWorkout].name,
+            workoutSets: setInfo[0],
+            workoutReps: setInfo[1],
+            workoutRest: setInfo[2],
+            workoutTarget: singleGroup[randomWorkout].targetmuscles,
+            workoutLink: singleGroup[randomWorkout].videourl,
+        }
+
+        workoutList.push(fullWorkout)
+        muscleArray[count].splice(randomWorkout, 1)
+        count++
+    }
+    return workoutList
+}
+
 //http://localhost:3200/generateWorkout
 function generateWorkout(req, res){
     const {workoutInput, workoutLength, username} = req.body;
@@ -140,20 +166,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 3; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+                        workoutList = getWorkout(3, muscleArray, workoutInput)
 
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -180,20 +194,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 4; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+                        workoutList = getWorkout(4, muscleArray, workoutInput)
 
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -220,20 +222,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 4; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
+                        workoutList = getWorkout(4, muscleArray, workoutInput)
 
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -260,20 +250,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
+                        workoutList = getWorkout(6, muscleArray, workoutInput)
+                        
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -300,20 +278,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
+                        workoutList = getWorkout(6, muscleArray, workoutInput)
+                        
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -340,20 +306,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 6; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
+                        workoutList = getWorkout(6, muscleArray, workoutInput)
+                        
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -380,20 +334,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 8; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-                            
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
+                        workoutList = getWorkout(8, muscleArray, workoutInput)
+                        
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
@@ -420,20 +362,8 @@ function generateWorkout(req, res){
                             muscleArray.push(tempArray)
                             tempArray = []
                         }
-                        for(let i = 0; i < 8; i++){
-                            if(count == workoutInput.length)
-                                count = 0
-                            singleGroup = muscleArray[count]
-                            randomWorkout = Math.floor(Math.random() * singleGroup.length)
-                            setInfo = getSetInfo(singleGroup[randomWorkout].settype, activitylevel_id, singleGroup[randomWorkout].musclegroup)
-
-                            fullWorkout = [singleGroup[randomWorkout].musclegroup, singleGroup[randomWorkout].name, setInfo[0], 
-                            setInfo[1], setInfo[2], singleGroup[randomWorkout].targetmuscles, singleGroup[randomWorkout].videourl]
-
-                            workoutList.push(fullWorkout)
-                            muscleArray[count].splice(randomWorkout, 1)
-                            count++
-                        }
+                        workoutList = getWorkout(8, muscleArray, workoutInput)
+                        
                         for(let k = 0; k < workoutList.length; k++){
                             if(workoutList[k] == null)
                                 nullCounter++
