@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
 
 const secretKey = 'luisdumb'
 
+// login function (now with JWT YIPPEEEEE)
 router.post('/login', async (req, res) => {
   const password_check = req.body.password;
   const email = req.body.email;
@@ -38,14 +39,15 @@ router.post('/login', async (req, res) => {
 
   const token = jwt.sign({ user_id }, secretKey);
   return res
-    .cookie("access_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    })
+    // .cookie("access_token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    // })
     .status(200)
-    .json({message: "Logged in was successfull" });
+    .json({user_data, token});
   });
 
+// logout function
 router.post('/logout', verifyToken, (req, res) => {
   return res
     .clearCookie("access_token")

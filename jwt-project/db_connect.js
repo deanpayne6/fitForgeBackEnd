@@ -1,5 +1,7 @@
 // future file for db connection
 const mysql = require("mysql");
+const user = require("./models/user");
+
 
 const db = mysql.createConnection({
   host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
@@ -31,15 +33,18 @@ function queryUserData(dataType, email) {
 }
 
 async function getUser(email) {
+
   const query = `
     SELECT
-    username, first_name, last_name, age
+    username, firstname, lastname, age
     FROM users
     WHERE emailaddress = '${email}'
   `
   const results = await this.query(query);
 
-  return results;
+  const user_returned = new user(email, results[0].username, results[0].firstname, results[0].lastname, results[0].age);
+
+  return user_returned;
 
 }
 
