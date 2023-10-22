@@ -2,6 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql")
 const generateWorkout = require("./generateWorkout")
 
+//http://localhost:3200/updateWorkout
 function updateWorkout(req, res){
     revisedWorkout = []
     activitylevel_id = 0
@@ -28,8 +29,15 @@ function updateWorkout(req, res){
                     for(let i = 0; i < workoutList.length; i++){
                         if(i == index){
                             setInfo = generateWorkout.getSetInfo(holdWorkout.settype, activitylevel_id, holdWorkout.musclegroup)
-                            tempWorkout = [holdWorkout.musclegroup, holdWorkout.name, setInfo[0], 
-                            setInfo[1], setInfo[2], holdWorkout.targetmuscles, holdWorkout.videourl]
+                            let tempWorkout = {
+                                workoutMuscleGroup: holdWorkout.musclegroup,
+                                workoutName: holdWorkout.name,
+                                workoutSets: setInfo[0],
+                                workoutReps: setInfo[1],
+                                workoutRest: setInfo[2],
+                                workoutTarget: holdWorkout.targetmuscles,
+                                workoutLink: holdWorkout.videourl,
+                            }
                             revisedWorkout.push(tempWorkout)
                         }
                         else
@@ -47,6 +55,7 @@ function updateWorkout(req, res){
     })
 }
 
+//http://localhost:3200/sendMuscleSwap
 function sendMuscleSwap(req, res){
     char = ","
     substring = ""
