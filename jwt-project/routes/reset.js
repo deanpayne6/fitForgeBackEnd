@@ -8,33 +8,78 @@ const secretKey = require('../config/secretKey');
 const nodemailer = require('nodemailer'); 
 
 
-//passwordRecovery
-router.post('/passwordRecovery', async (req, res) =>{
-
+//PasswordRecovery
+router.post('/sendEmailPasswordRecovery', async (req, res) =>{
+    const transporter = nodemailer.createTransport({ 
+        service: 'gmail', 
+        auth: { 
+            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
+            pass: secure_configuration.PASSWORD 
+        } 
+    }); 
+      
+    const token = jwt.sign({ 
+            data: 'Token Data'  , 
+        }, secretKey, { expiresIn: '10m' }   
+    );     
+      
+    const mailConfigurations = { 
+      
+        // Send FitForge Support Email
+        from: 'fitForge.support@gmail.com', 
+      
+        to: email, 
+      
+        // Subject of Email 
+        subject: 'Email Verification', 
+          
+        // The email that is sent to user. 
+        text: `
+        Hi 
+        
+        There was a request to change your password!
+        
+        If you did not make this request then please ignore this email.
+        
+        Otherwise, please click this link to change your password: 
+               http://localhost:3200/verify_passreset/${token}  
+               Thanks`
+          
+    }; 
+      
+    transporter.sendMail(mailConfigurations, function(error, info){ 
+        if (error) throw Error(error); 
+        console.log('Email Sent Successfully'); 
+        console.log(info); 
+    }); 
 });
-//sendEmail
 
 //ChangePassword
 router.post('/changePassword', async (req, rex)=>{
   
   const email = req.body.email;
-  
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+
+  const updatePasswordQuery = 'UPDATE users SET password_hash = ? WHERE emailaddress = ?';
     const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
     checkUser(email);
         if (err) { 
             res.send(err); 
         } else { 
-            user.changePassword(req.body.oldpassword,  
-            req.body.newpassword, function (err) { 
-                if (err) { 
-                    res.send(err); 
-                } else { 
-                    
+          
+                    await db.query(updatePasswordQuery, [hashedPassword, email]);
+                    try {
+                      console.log(`Password updated successfully for user with email: ${email}`);
+                      return res.status(200).json({ message: 'Password updated successfully.' });
+                    } catch (error) {
+                      console.error('Error updating password:', error);
+                      return res.status(500).json({ error: 'Internal server error' });
+                    }
                     res.send('Successfully changed password') 
                 } 
             }); 
-        } 
-    }); 
+   
 
 //verifyToken
 router.get('/verify/:token', async (req, res) => {
