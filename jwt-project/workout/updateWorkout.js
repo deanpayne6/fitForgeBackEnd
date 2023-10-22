@@ -29,8 +29,15 @@ function updateWorkout(req, res){
                     for(let i = 0; i < workoutList.length; i++){
                         if(i == index){
                             setInfo = generateWorkout.getSetInfo(holdWorkout.settype, activitylevel_id, holdWorkout.musclegroup)
-                            tempWorkout = [holdWorkout.musclegroup, holdWorkout.name, setInfo[0], 
-                            setInfo[1], setInfo[2], holdWorkout.targetmuscles, holdWorkout.videourl]
+                            let tempWorkout = {
+                                workoutMuscleGroup: holdWorkout.musclegroup,
+                                workoutName: holdWorkout.name,
+                                workoutSets: setInfo[0],
+                                workoutReps: setInfo[1],
+                                workoutRest: setInfo[2],
+                                workoutTarget: holdWorkout.targetmuscles,
+                                workoutLink: holdWorkout.videourl,
+                            }
                             revisedWorkout.push(tempWorkout)
                         }
                         else
