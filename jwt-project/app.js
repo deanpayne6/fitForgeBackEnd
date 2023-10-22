@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use('/auth', authRoute);
 app.use('/questionnaire', questionnaireRoute);
 app.use('/get', getRoute);
-// app.use('/reset', resetRoute);
+app.use('/reset', resetRoute);
 
 
 const pool = mysql.createPool({
