@@ -1,18 +1,21 @@
 require("dotenv").config();
 const express = require("express");
-const mysql = require("mysql")
+const mysql = require("mysql");
 const app = express();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Pool } = require('pg');
-const cors = require("cors")
-const workout = require("./workout")
-
+const cors = require("cors");
+const updateWorkout = require("./workout/updateWorkout")
+const generateWorkout = require("./workout/generateWorkout");
+const workoutLog = require("./workout/workoutLog");
+const authRoute = require("./routes/auth");
+const questionnaireRoute = require("./routes/questionnaire");
+const resetRoute = require("./routes/reset");
+const getRoute = require("./routes/get");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
 
 // importing user context
-const User = require("./model/user");
+const User = require("./models/user");
 
 //importing verifyToken
 
@@ -71,6 +74,14 @@ app.use(cookieParser());
 //       // Our register logic ends here
 // });
 
+
+app.use(cookieParser());
+app.use('/auth', authRoute);
+app.use('/questionnaire', questionnaireRoute);
+app.use('/get', getRoute);
+// app.use('/reset', resetRoute);
+
+
 const pool = mysql.createPool({
   host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
   user: "fitforge",
@@ -89,10 +100,11 @@ app.use((req, res, next) => {
   });
 });
 
-// make login post request
-// remove console logs
-// create model folder and data models on both frontend and backend
-// avoid working with type ANY
+// Sample method for testing
+app.get("/", async (req, res) => {
+  res.send("THIS PAGE ACTIVE ONG FITFORGE GANG NO CAP ON A STACK TILL I DIE SWOOP")
+})
+
 
 // Login
 app.get("/login", async (req, res) => {
@@ -195,6 +207,7 @@ app.get("/login", async (req, res) => {
   // Our register logic ends here
 });
 
+
 app.use((req, res, next) => {
   pool.getConnection((err, connection) => {
     if (err) {
@@ -204,6 +217,7 @@ app.use((req, res, next) => {
     next();
   });
 });
+
 
 app.post("/register", async (req,res) => {
   // receive user information
@@ -362,16 +376,26 @@ app.get("/checkUsernameAvailability", (req, res) => {
   });
 });
 
-app.post("/questionnaireSubmission", (req, res) => {
-  const { questionnaire } = req.body;
-});
+
 
 app.post("/generateWorkout", (req, res) => {
-  workout.generateWorkout(req, res);
+  generateWorkout.generateWorkout(req, res);
 })
 
 app.post("/workoutLog", (req, res) => {
-  workout.workoutLog(req, res);
+  workoutLog.workoutLog(req, res);
+})
+
+app.post("/submitWorkout", (req, res) => {
+  workoutLog.submitWorkout(req, res)
+})
+
+app.post("/updateWorkout", (req, res) => {
+  updateWorkout.updateWorkout(req, res)
+})
+
+app.post("/sendMuscleSwap", (req, res) => {
+  updateWorkout.sendMuscleSwap(req, res)
 })
 
 module.exports = app;
