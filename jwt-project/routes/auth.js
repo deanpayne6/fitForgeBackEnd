@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
     // })
     .status(200)
     .json({user_data, token});
-  });
+});
 
 // logout function
 router.post('/logout', verifyToken, (req, res) => {

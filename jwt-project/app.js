@@ -10,6 +10,7 @@ const authRoute = require("./routes/auth");
 const questionnaireRoute = require("./routes/questionnaire");
 const resetRoute = require("./routes/reset");
 const getRoute = require("./routes/get");
+const workoutRoute = require("./routes/workout");
 const cookieParser = require("cookie-parser");
 
 app.use(express.json());
@@ -30,7 +31,7 @@ app.use('/auth', authRoute);
 app.use('/questionnaire', questionnaireRoute);
 app.use('/get', getRoute);
 app.use('/reset', resetRoute);
-
+app.use('/workout', workoutRoute);
 
 const pool = mysql.createPool({
   host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
