@@ -1,5 +1,5 @@
 require("dotenv").config();
-const mysql = require("mysql")
+const db = require("../db_connect");
 
 function getSetInfo(settype, activitylevel_id, musclegroup){
     sets = ""
@@ -140,60 +140,37 @@ function getWorkoutLength(workoutLength, workoutInput){
     return length
 }
 
-//http://localhost:3200/generateWorkout
-function generateWorkout(req, res){
-    const {workoutInput, workoutLength, username} = req.body;
+//http://localhost:3200/workout/generateWorkout
+async function generateWorkout(workoutInput, workoutLength, username){
     muscleArray = []
     workoutList = []
     tempArray = []
     equipmentlevel_id = 0
     activitylevel_id = 0
     count = 0
-    nullCounter = 0
 
-    var con = mysql.createConnection({
-        host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
-        user: "fitforge",
-        password: "fitforge",
-        database: "fitforge"
-    });
+    const userQuery = "SELECT * FROM users where username = ?"
+    const workoutQuery = "SELECT * FROM exercises WHERE equipmentlevel_id = ?"
+    let userData = await db.query(userQuery, username)
+    if(userData.length > 0){
+        equipmentlevel_id = userData[0].equipmentlevel_id
+        activitylevel_id = userData[0].activitylevel_id
+    }
+    else
+        return ["Invalid Username", workoutList]
 
-    const query1 = "SELECT * FROM users where username = ?"
-    con.connect(function(err){
-        if (err) throw err;
-        con.query(query1, username, function (err, result){
-            if (err) throw err;
-            if (result.length > 0){
-                equipmentlevel_id = result[0].equipmentlevel_id
-                activitylevel_id = result[0].activitylevel_id
-                const query2 = "SELECT * FROM exercises WHERE equipmentlevel_id = ?"
-                con.query(query2, equipmentlevel_id, function (err, result){
-                    if (err) throw err;
-                    for(let i = 0; i < workoutInput.length; i++){
-                        for(let j = 0; j < result.length; j++){
-                            if(result[j].musclegroup == workoutInput[i]){
-                                tempArray.push(result[j])
-                            }
-                        }
-                        muscleArray.push(tempArray)
-                        tempArray = []
-                    }
-                    workoutList = getWorkout(getWorkoutLength(workoutLength, workoutInput), muscleArray, workoutInput, activitylevel_id)
-
-                    for(let k = 0; k < workoutList.length; k++){
-                        if(workoutList[k] == null)
-                            nullCounter++
-                    }
-                    if(nullCounter > 0)
-                        res.status(400).send("Invalid Muscle Group(s)")
-                    else
-                        res.status(200).json(workoutList)
-                })
+    let workoutData = await db.query(workoutQuery, equipmentlevel_id)
+    for(let i = 0; i < workoutInput.length; i++){
+        for(let j = 0; j < workoutData.length; j++){
+            if(workoutData[j].musclegroup == workoutInput[i]){
+                tempArray.push(workoutData[j])
             }
-            else
-                res.status(400).send("Invalid Username")
-        })
-    })
+        }
+        muscleArray.push(tempArray)
+        tempArray = []
+    }
+    workoutList = getWorkout(getWorkoutLength(workoutLength, workoutInput), muscleArray, workoutInput, activitylevel_id)
+    return ["Success", workoutList]
 }
 
 module.exports = {generateWorkout, getSetInfo};
