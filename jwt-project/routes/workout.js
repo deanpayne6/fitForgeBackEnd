@@ -191,7 +191,7 @@ router.post('/updateWorkout', (req, res) => {
                     holdWorkout = result[0]
                     for(let i = 0; i < workoutList.length; i++){
                         if(i == index){
-                            setInfo = generateWorkout.getSetInfo(holdWorkout.settype, activitylevel_id, holdWorkout.musclegroup)
+                            setInfo = getSetInfo(holdWorkout.settype, activitylevel_id, holdWorkout.musclegroup)
                             let tempWorkout = {
                                 workoutMuscleGroup: holdWorkout.musclegroup,
                                 workoutName: holdWorkout.name,
