@@ -13,31 +13,24 @@ function setWorkoutInfo(result){
   return workoutInfo
 }
 
-//http://localhost:3200/workoutLog
+//http://localhost:3200/workout/workoutLog
 async function workoutLog(username, dateRequested) {
   user_id = 0
   tempLog = []
   sortedLog = []
-  workoutData = []
+  queryData = []
   
   const userQuery = "SELECT * FROM users WHERE username = ?"
   const workoutQuery = "SELECT workoutplan_exercises.day, sets, reps, rest, weight, rpe, exercises.name, musclegroup FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
   
   let userData = await db.query(userQuery, username)
-  if(userData.length > 0){
+  if(userData.length > 0)
     user_id = userData[0].user_id
-    queryData1 = [user_id, dateRequested[0]]
-    queryData2 = [user_id, dateRequested[1]]
-    queryData3 = [user_id, dateRequested[2]]
-  }
   else
     return ["Invalid Username", sortedLog] 
 
-  workoutData.push(await db.query(workoutQuery, queryData1))
-  workoutData.push(await db.query(workoutQuery, queryData2))
-  workoutData.push(await db.query(workoutQuery, queryData3))
-  for(let i = 0; i < 3; i++){
-    holdWorkoutData = workoutData[i]
+  for(let j = 0; j < dateRequested.length; j++){
+    holdWorkoutData = await db.query(workoutQuery, [user_id, dateRequested[j]])
     for(let i = 0; i < holdWorkoutData.length; i++){
       tempData = setWorkoutInfo(holdWorkoutData[i])
       tempLog.push(tempData)

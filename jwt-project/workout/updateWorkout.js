@@ -2,7 +2,7 @@ require("dotenv").config();
 const db = require("../db_connect");
 const generateWorkout = require("./generateWorkout")
 
-//http://localhost:3200/updateWorkout
+//http://localhost:3200/workout/updateWorkout
 async function updateWorkout(workoutList, newWorkout, index, username){
     revisedWorkout = []
     activitylevel_id = 0
@@ -36,7 +36,7 @@ async function updateWorkout(workoutList, newWorkout, index, username){
     return ["Success", revisedWorkout]
 }
 
-//http://localhost:3200/sendMuscleSwap
+//http://localhost:3200/workout/sendMuscleSwap
 async function sendMuscleSwap(workoutName, username){
     char = ","
     substring = ""
