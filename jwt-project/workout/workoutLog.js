@@ -47,7 +47,7 @@ async function submitWorkout(workoutList, rpe, username){
   exercise_id = 0
   user_id = 0
   count = 0
-  date = new Date();
+  date = new Date()
 
   const userQuery = "SELECT * FROM users where username = ?"
   const planQuery = "INSERT INTO workoutplan VALUES (?, ?)"

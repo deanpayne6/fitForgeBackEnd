@@ -176,13 +176,11 @@ async function generateWorkout(workoutInput, workoutLength, username){
 //http://localhost:3200/workout/checkWorkout
 async function checkWorkout(username){
     user_id = 0
-    const date = new Date().toLocaleString('en-US', {
-        timeZone: 'America/Vancouver'
-    })
-    year = date.substring(5,9)
-    month = date.substring(0,2)
-    day = date.substring(3,4)
-    const formatDate = new Date(year,month-1,day)
+    const date = new Date() 
+    day = date.getDate()
+    month = date.getMonth() + 1
+    year = date.getFullYear()
+    formatDate = year + "-" + month + "-" + day
     
     const userQuery = "SELECT * FROM users where username = ?"
     const workoutQuery = "SELECT * FROM workoutplan WHERE user_id = ? and day = ?"
