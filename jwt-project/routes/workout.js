@@ -59,8 +59,8 @@ router.post("/updateWorkout", async (req, res) => {
 
 //http://localhost:3200/workout/sendMuscleSwap
 router.post("/sendMuscleSwap", async (req, res) => {
-  const {workoutName, username} = req.body
-  let data = await updateWorkout.sendMuscleSwap(workoutName, username)
+  const {workoutList, workoutName, username} = req.body
+  let data = await updateWorkout.sendMuscleSwap(workoutList, workoutName, username)
 
   if(data[0] == "Invalid Username")
     res.status(400).send(data[0])

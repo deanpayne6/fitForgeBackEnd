@@ -37,12 +37,13 @@ async function updateWorkout(workoutList, newWorkout, index, username){
 }
 
 //http://localhost:3200/workout/sendMuscleSwap
-async function sendMuscleSwap(workoutName, username){
+async function sendMuscleSwap(workoutList, workoutName, username){
     char = ","
     substring = ""
     equipmentlevel_id = 0
     muscleList = []
     target = ""
+    counter = 0
 
     const userQuery = "SELECT * FROM users where username = ?"
     const workoutQuery = "SELECT * FROM exercises where name = ?"
@@ -58,7 +59,7 @@ async function sendMuscleSwap(workoutName, username){
     workoutInfo = workoutData[0]
     index = workoutInfo.targetmuscles.indexOf(char)
     if(index > 0){
-        substring = workoutInfo.targetmuscles.substr(0, index-1)
+        substring = workoutInfo.targetmuscles.substr(0, index)
         target = substring
     }
     else{
@@ -71,8 +72,14 @@ async function sendMuscleSwap(workoutName, username){
         if(muscleData[i].name != workoutName){
             check = muscleData[i].targetmuscles.includes(target)
             if(check == true){
-                muscleList.push(muscleData[i].name)
+                for(let k = 0; k < workoutList.length; k++){
+                    if(workoutList[k].workoutName != muscleData[i].name)
+                        counter++
+                }
+                if(counter == workoutList.length)
+                    muscleList.push(muscleData[i].name)
             }
+            counter = 0
         }
     }
     return ["Success", muscleList]
