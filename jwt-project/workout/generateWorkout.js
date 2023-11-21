@@ -173,28 +173,4 @@ async function generateWorkout(workoutInput, workoutLength, username){
     return ["Success", workoutList]
 }
 
-//http://localhost:3200/workout/checkWorkout
-async function checkWorkout(username){
-    user_id = 0
-    const date = new Date() 
-    day = date.getDate()
-    month = date.getMonth() + 1
-    year = date.getFullYear()
-    formatDate = year + "-" + month + "-" + day
-    
-    const userQuery = "SELECT * FROM users where username = ?"
-    const workoutQuery = "SELECT * FROM workoutplan WHERE user_id = ? and day = ?"
-    let userData = await db.query(userQuery, username)
-    if(userData.length > 0)
-        user_id = userData[0].user_id
-    else
-        return "Invalid Username"
-
-    let workoutData = await db.query(workoutQuery, [user_id, formatDate])
-    if(workoutData.length > 0)
-        return true
-    else
-        return false
-}
-
-module.exports = {generateWorkout, getSetInfo, checkWorkout};
+module.exports = {generateWorkout, getSetInfo};

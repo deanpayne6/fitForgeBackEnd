@@ -50,7 +50,6 @@ async function submitWorkout(workoutList, rpe, username){
   date = new Date()
 
   const userQuery = "SELECT * FROM users where username = ?"
-  const planQuery = "INSERT INTO workoutplan VALUES (?, ?)"
   const workoutQuery = "SELECT * FROM exercises where name = ?"
   const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rpe) VALUES (?, ?, ?, ?, ?, ?, ?)"
 
@@ -61,7 +60,6 @@ async function submitWorkout(workoutList, rpe, username){
   else
     return "Invalid Username"
 
-  await db.query(planQuery, [user_id, date])
   for(let i = 0; i < workoutList.length; i++){
     let workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
     exercise_id = workoutData[0].exercise_id

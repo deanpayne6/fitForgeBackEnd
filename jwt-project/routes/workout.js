@@ -8,6 +8,8 @@ const mysql = require("mysql");
 const updateWorkout = require("../workout/updateWorkout")
 const generateWorkout = require("../workout/generateWorkout");
 const workoutLog = require("../workout/workoutLog");
+const dailyWorkouts = require("../workout/dailyWorkouts");
+
 
 //http://localhost:3200/workout/generateWorkout
 router.post("/generateWorkout", async (req, res) => {
@@ -69,10 +71,22 @@ router.post("/sendMuscleSwap", async (req, res) => {
     res.status(200).json(data[1])
 })
 
+//http://localhost:3200/workout/storeDailyWorkouts
+router.post("/storeDailyWorkouts", async (req, res) => {
+  const {multipleWorkoutList, username} = req.body
+  let data = await dailyWorkouts.storeDailyWorkouts(multipleWorkoutList, username)
+
+  if(data == "Invalid Username")
+    res.status(400).send(data)
+  
+  else if(data == "Success")
+    res.status(200).send(data)
+})
+
 //http://localhost:3200/workout/checkWorkout
 router.post("/checkWorkout", async (req, res) => {
   const {username} = req.body
-  let data = await generateWorkout.checkWorkout(username)
+  let data = await dailyWorkouts.checkWorkout(username)
 
   if(data == "Invalid Username")
     res.status(400).send(data)
