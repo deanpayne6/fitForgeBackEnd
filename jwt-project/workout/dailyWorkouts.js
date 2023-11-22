@@ -70,38 +70,53 @@ async function getWorkout(date, username){
             workoutTarget: workoutData[i].targetmuscles,
             workoutLink: workoutData[i].videourl,
         }
-
         workoutList.push(fullWorkout)
     }
     return ["Success", workoutList]
 }
 
-//return an array of 8 elements. first will be one of these options, other 7 will be empty or will contain a full workout list
-//1 = wokrout already stored
-//0 = no workout stored
-//-1 = wokrout completed
+//1 = wokrout already stored for current day
+//0 = no workout stored for current day
+//-1 = wokrout completed for current day
 //http://localhost:3200/workout/checkWorkout
 async function checkWorkout(username){
     user_id = 0
+    checkData = [0, [], [], [], [], [], [], []]
     const date = new Date() 
     day = date.getDate()
     month = date.getMonth() + 1
     year = date.getFullYear()
-    formatDate = year + "-" + month + "-" + day
     
     const userQuery = "SELECT * FROM users where username = ?"
-    const workoutQuery = "SELECT * FROM workoutplan WHERE user_id = ? and day = ?"
+    const pastQuery = "SELECT * FROM workoutplan_exercises WHERE user_id = ? and day = ?"
+    const futureQuery = "SELECT * FROM workoutplan WHERE user_id = ? and day = ?"
+
     let userData = await db.query(userQuery, username)
     if(userData.length > 0)
         user_id = userData[0].user_id
     else
-        return "Invalid Username"
+        return ["Invalid Username", checkData]
 
-    let workoutData = await db.query(workoutQuery, [user_id, formatDate])
-    if(workoutData.length > 0)
-        return true
-    else
-        return false
+    for(let i = 0; i < 7; i++){
+        day += i
+        formatDate = year + "-" + month + "-" + day
+        workoutData = await getWorkout(formatDate, username)
+        if(workoutData[1].length > 0){
+            checkData[i+1] = workoutData[1]
+        }
+        day = date.getDate()
+    }
+
+    formatDate = year + "-" + month + "-" + day
+    pastData = await db.query(pastQuery, [user_id, formatDate])
+    futureData = await db.query(futureQuery, [user_id, formatDate])
+
+    if(pastData.length > 0)
+        checkData[0] = -1
+    else if(futureData.length > 0)
+        checkData[0] = 1
+
+    return["Success", checkData]
 }
 
 module.exports = {storeDailyWorkouts, getWorkout, checkWorkout}

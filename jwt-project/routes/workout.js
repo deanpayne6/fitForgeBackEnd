@@ -105,11 +105,11 @@ router.post("/checkWorkout", async (req, res) => {
   const {username} = req.body
   let data = await dailyWorkouts.checkWorkout(username)
 
-  if(data == "Invalid Username")
-    res.status(400).send(data)
+  if(data[0] == "Invalid Username")
+    res.status(400).send(data[0])
   
-  else
-    res.status(200).send(data)
+  else if(data[0] == "Success")
+    res.status(200).send(data[1])
 })
 
 module.exports = router;
