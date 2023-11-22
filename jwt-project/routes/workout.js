@@ -83,6 +83,23 @@ router.post("/storeDailyWorkouts", async (req, res) => {
     res.status(200).send(data)
 })
 
+//http://localhost:3200/workout/getWorkout
+router.post("/getWorkout", async (req, res) => {
+  const {username} = req.body
+  const date = new Date() 
+  day = date.getDate()
+  month = date.getMonth() + 1
+  year = date.getFullYear()
+  formatDate = year + "-" + month + "-" + day
+  let data = await dailyWorkouts.getWorkout(formatDate, username)
+
+  if(data[0] == "Invalid Username")
+    res.status(400).send(data[0])
+  
+  else if(data[0] == "Success")
+    res.status(200).send(data[1])
+})
+
 //http://localhost:3200/workout/checkWorkout
 router.post("/checkWorkout", async (req, res) => {
   const {username} = req.body

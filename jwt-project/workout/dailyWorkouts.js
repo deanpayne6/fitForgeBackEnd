@@ -1,6 +1,7 @@
 require("dotenv").config();
 const db = require("../db_connect");
 
+//http://localhost:3200/workout/storeDailyWorkouts
 async function storeDailyWorkouts(multipleWorkoutList, username){
     user_id = 0
     const date = new Date()
@@ -14,7 +15,6 @@ async function storeDailyWorkouts(multipleWorkoutList, username){
     const dailyQuery = "INSERT INTO dailyworkouts_exercises (user_id, day, exercise_id, sets, reps, rest) VALUES (?, ?, ?, ?, ?, ?)"
     const checkQuery = "SELECT * FROM dailyworkouts_exercises WHERE user_id = ? and day = ?"
     const dropDaily = "DELETE FROM dailyworkouts_exercises WHERE user_id = ? and day = ?"
-
 
     let userData = await db.query(userQuery, username)
     if(userData.length > 0)
@@ -46,9 +46,40 @@ async function storeDailyWorkouts(multipleWorkoutList, username){
     return "Success"
 }
 
-//1 = start workout
-//0 = no workout
-//-1 = completed workout
+//http://localhost:3200/workout/getWorkout
+async function getWorkout(date, username){
+    user_id = 0
+    workoutList = []
+
+    const userQuery = "SELECT * FROM users where username = ?"
+    const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, targetmuscles, videourl FROM dailyworkouts_exercises INNER JOIN exercises ON dailyworkouts_exercises.exercise_id = exercises.exercise_id WHERE (dailyworkouts_exercises.user_id = ?) and (dailyworkouts_exercises.day = ?)"
+    let userData = await db.query(userQuery, username)
+    if(userData.length > 0)
+        user_id = userData[0].user_id
+    else
+        return ["Invalid Username", workoutList]
+
+    let workoutData = await db.query(workoutQuery, [user_id, date])
+    for(let i = 0; i < workoutData.length; i++){
+        let fullWorkout = {
+            workoutMuscleGroup: workoutData[i].musclegroup,
+            workoutName: workoutData[i].name,
+            workoutSets: workoutData[i].sets,
+            workoutReps: workoutData[i].reps,
+            workoutRest: workoutData[i].rest,
+            workoutTarget: workoutData[i].targetmuscles,
+            workoutLink: workoutData[i].videourl,
+        }
+
+        workoutList.push(fullWorkout)
+    }
+    return ["Success", workoutList]
+}
+
+//return an array of 8 elements. first will be one of these options, other 7 will be empty or will contain a full workout list
+//1 = wokrout already stored
+//0 = no workout stored
+//-1 = wokrout completed
 //http://localhost:3200/workout/checkWorkout
 async function checkWorkout(username){
     user_id = 0
@@ -73,4 +104,4 @@ async function checkWorkout(username){
         return false
 }
 
-module.exports = {storeDailyWorkouts, checkWorkout}
+module.exports = {storeDailyWorkouts, getWorkout, checkWorkout}
