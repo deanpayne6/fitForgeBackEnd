@@ -4,10 +4,7 @@ const db = require("../db_connect");
 //http://localhost:3200/workout/storeDailyWorkouts
 async function storeDailyWorkouts(multipleWorkoutList, username){
     user_id = 0
-    const date = new Date()
-    day = date.getDate()
-    month = date.getMonth() + 1
-    year = date.getFullYear()
+    date = new Date()
 
     const userQuery = "SELECT * FROM users WHERE username = ?"
     const planQuery = "INSERT INTO workoutplan VALUES (?, ?)"
@@ -25,7 +22,10 @@ async function storeDailyWorkouts(multipleWorkoutList, username){
     for(let i = 0; i < multipleWorkoutList.length; i++){
         workoutList = multipleWorkoutList[i]
         if(workoutList.length > 0){
-            day += i
+            date.setDate(date.getDate()+i)
+            day = date.getDate()
+            month = date.getMonth() + 1
+            year = date.getFullYear()
             formatDate = year + "-" + month + "-" + day
             let checkData = await db.query(checkQuery, [user_id, formatDate])
             if(checkData.length > 0){
@@ -40,7 +40,7 @@ async function storeDailyWorkouts(multipleWorkoutList, username){
                 queryData = [user_id, formatDate, workoutInfo[0].exercise_id, workoutList[k].workoutSets, workoutList[k].workoutReps, workoutList[k].workoutRest]
                 await db.query(dailyQuery, queryData)
             }
-            day = date.getDate()
+            date = new Date()
         }
     }
     return "Success"
@@ -79,10 +79,7 @@ async function getWorkout(date, username){
 async function getWeeklyWorkout(username){
     user_id = 0
     weeklyWorkout = [[], [], [], [], [], [], []]
-    const date = new Date() 
-    day = date.getDate()
-    month = date.getMonth() + 1
-    year = date.getFullYear()
+    date = new Date() 
 
     const userQuery = "SELECT * FROM users where username = ?"
     let userData = await db.query(userQuery, username)
@@ -92,13 +89,16 @@ async function getWeeklyWorkout(username){
         return ["Invalid Username", weeklyWorkout]
 
     for(let i = 0; i < 7; i++){
-        day += i
+        date.setDate(date.getDate()+i)
+        day = date.getDate()
+        month = date.getMonth() + 1
+        year = date.getFullYear()
         formatDate = year + "-" + month + "-" + day
         workoutData = await getWorkout(formatDate, username)
         if(workoutData[1].length > 0){
             weeklyWorkout[i] = workoutData[1]
         }
-        day = date.getDate()
+        date = new Date()
     }
     return ["Success", weeklyWorkout]
 }
