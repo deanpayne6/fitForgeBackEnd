@@ -100,6 +100,18 @@ router.post("/getWorkout", async (req, res) => {
     res.status(200).send(data[1])
 })
 
+//http://localhost:3200/workout/getWeeklyWorkout
+router.post("/getWeeklyWorkout", async (req, res) => {
+  const {username} = req.body
+  let data = await dailyWorkouts.getWeeklyWorkout(username)
+
+  if(data[0] == "Invalid Username")
+    res.status(400).send(data[0])
+  
+  else if(data[0] == "Success")
+    res.status(200).send(data[1])
+})
+
 //http://localhost:3200/workout/checkWorkout
 router.post("/checkWorkout", async (req, res) => {
   const {username} = req.body
