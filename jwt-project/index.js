@@ -12,8 +12,18 @@ const options = {
   cert: fs.readFileSync("keys/fullchain.pem")
 }
 
-const server = https.createServer(options, app);
+let prod = false;
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+if (prod){
+  const server = https.createServer(options, app);
+  server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+else {
+  const server = http.createServer(app);
+  server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
