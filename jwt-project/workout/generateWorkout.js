@@ -15,27 +15,27 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
         if(activitylevel_id == 1){
             sets = "2"
             reps = "10 Per " + side
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 2){
             sets = "3"
             reps = "10 Per " + side
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 3){
             sets = "3"
             reps = "15 Per " + side
-            rest = "90 Seconds"
+            rest = "90"
         }
         else if(activitylevel_id == 4){
             sets = "4"
             reps = "10 Per " + side
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 5){
             sets = "4"
             reps = "15 Per " + side
-            rest = "90 Seconds"
+            rest = "90"
         }
     }
 
@@ -43,27 +43,27 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
         if(activitylevel_id == 1){
             sets = "2"
             reps = "10"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 2){
             sets = "3"
             reps = "10"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 3){
             sets = "3"
             reps = "12"
-            rest = "90 Seconds"
+            rest = "90"
         }
         else if(activitylevel_id == 4){
             sets = "4"
             reps = "10"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 5){
             sets = "4"
             reps = "12"
-            rest = "90 Seconds"
+            rest = "90"
         }
     }
 
@@ -71,27 +71,27 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
         if(activitylevel_id == 1){
             sets = "2"
             reps = "45 Seconds"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 2){
             sets = "3"
             reps = "45 Seconds"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 3){
             sets = "3"
             reps = "60 Seconds"
-            rest = "90 Seconds"
+            rest = "90"
         }
         else if(activitylevel_id == 4){
             sets = "4"
             reps = "45 Seconds"
-            rest = "60 Seconds"
+            rest = "60"
         }
         else if(activitylevel_id == 5){
             sets = "4"
             reps = "60 Seconds"
-            rest = "90 Seconds"
+            rest = "90"
         }
     }
     setInfo = [sets, reps, rest]
