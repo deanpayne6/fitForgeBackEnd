@@ -64,7 +64,7 @@ async function workoutLog(username, dateRequested) {
 //   return ["Success", sortedLog]
 // }
 
-//http://localhost:3200/submitWorkout
+//http://localhost:3200/workout/submitWorkout
 async function submitWorkout(rpe, username){
   workoutInfo = []
   exercise_id = 0
