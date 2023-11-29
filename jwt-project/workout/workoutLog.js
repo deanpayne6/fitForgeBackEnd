@@ -1,5 +1,6 @@
 require("dotenv").config();
 const db = require("../db_connect");
+const dailyWorkouts = require("../workout/dailyWorkouts");
 
 function setWorkoutInfo(workout){
   let workoutInfo = {
@@ -34,6 +35,7 @@ async function workoutLog(username, dateRequested) {
   }
   return ["Success", workoutData]
 }
+
 //Old workoutLog code
 // async function workoutLog(username, dateRequested) {
 //   user_id = 0
@@ -62,8 +64,8 @@ async function workoutLog(username, dateRequested) {
 //   return ["Success", sortedLog]
 // }
 
-//http://localhost:3200/submitWorkout
-async function submitWorkout(workoutList, rpe, username){
+//http://localhost:3200/workout/submitWorkout
+async function submitWorkout(rpe, username){
   workoutInfo = []
   exercise_id = 0
   user_id = 0
@@ -86,14 +88,21 @@ async function submitWorkout(workoutList, rpe, username){
   else
     return "Invalid Username"
 
-  for(let i = 0; i < workoutList.length; i++){
-    let workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
-    exercise_id = workoutData[0].exercise_id
-    workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, rpe[i]]
-    await db.query(insertQuery, workoutInfo)
+  daily = await dailyWorkouts.getWorkout(formatDate, username)
+  workoutList = daily[1]
+  if(workoutList.length > 0){
+    for(let i = 0; i < workoutList.length; i++){
+      workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
+      exercise_id = workoutData[0].exercise_id
+      workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, rpe[i]]
+      await db.query(insertQuery, workoutInfo)
+    }
+    await db.query(dropDaily, [user_id, formatDate])
+    return "Success"
   }
-  await db.query(dropDaily, [user_id, formatDate])
-  return "Success"
+  else
+    return "No Workout Stored"
+  
 }
 
 module.exports = {workoutLog, submitWorkout};

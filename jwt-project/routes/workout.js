@@ -37,10 +37,10 @@ router.post("/workoutLog", async (req, res) => {
 
 //http://localhost:3200/workout/submitWorkout
 router.post("/submitWorkout", async (req, res) => {
-  const {workoutList, rpe, username} = req.body
-  let data = await workoutLog.submitWorkout(workoutList, rpe, username)
+  const {rpe, username} = req.body
+  let data = await workoutLog.submitWorkout(rpe, username)
 
-  if(data == "Invalid Username")
+  if(data != "Success")
     res.status(400).send(data)
   
   else if(data == "Success")
