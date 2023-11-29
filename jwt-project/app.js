@@ -112,26 +112,4 @@ app.get("/checkUsernameAvailability", (req, res) => {
   });
 });
 
-
-
-app.post("/generateWorkout", (req, res) => {
-  generateWorkout.generateWorkout(req, res);
-})
-
-app.post("/workoutLog", (req, res) => {
-  workoutLog.workoutLog(req, res);
-})
-
-app.post("/submitWorkout", (req, res) => {
-  workoutLog.submitWorkout(req, res)
-})
-
-app.post("/updateWorkout", (req, res) => {
-  updateWorkout.updateWorkout(req, res)
-})
-
-app.post("/sendMuscleSwap", (req, res) => {
-  updateWorkout.sendMuscleSwap(req, res)
-})
-
 module.exports = app;

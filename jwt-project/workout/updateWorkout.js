@@ -1,118 +1,88 @@
 require("dotenv").config();
-const mysql = require("mysql")
+const db = require("../db_connect");
 const generateWorkout = require("./generateWorkout")
 
-//http://localhost:3200/updateWorkout
-function updateWorkout(req, res){
+//http://localhost:3200/workout/updateWorkout
+async function updateWorkout(workoutList, newWorkout, index, username){
     revisedWorkout = []
     activitylevel_id = 0
-    var con = mysql.createConnection({
-        host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
-        user: "fitforge",
-        password: "fitforge",
-        database: "fitforge"
-    });
 
-    const {workoutList, newWorkout, index, username} = req.body
-    const query1 = "SELECT * FROM users where username = ?"
-    const query2 = "SELECT * FROM exercises where name = ?"
-    con.connect(function(err){
-        if (err) throw err;
-        con.query(query1, username, function (err, result){
-            if (err) throw err;
-            if(result.length > 0){
-                activitylevel_id = result[0].activitylevel_id
-            con.query(query2, newWorkout, function (err, result){
-                if (err) throw err;
-                if(result.length > 0){
-                    holdWorkout = result[0]
-                    for(let i = 0; i < workoutList.length; i++){
-                        if(i == index){
-                            setInfo = generateWorkout.getSetInfo(holdWorkout.settype, activitylevel_id, holdWorkout.musclegroup)
-                            let tempWorkout = {
-                                workoutMuscleGroup: holdWorkout.musclegroup,
-                                workoutName: holdWorkout.name,
-                                workoutSets: setInfo[0],
-                                workoutReps: setInfo[1],
-                                workoutRest: setInfo[2],
-                                workoutTarget: holdWorkout.targetmuscles,
-                                workoutLink: holdWorkout.videourl,
-                            }
-                            revisedWorkout.push(tempWorkout)
-                        }
-                        else
-                            revisedWorkout.push(workoutList[i])
-                    }
-                    res.status(200).json(revisedWorkout)
-                }
-                else
-                    res.status(400).send("Invalid Workout")
-                })
+    const userQuery = "SELECT * FROM users where username = ?"
+    const workoutQuery = "SELECT * FROM exercises where name = ?"
+    let userData = await db.query(userQuery, username)
+    if(userData.length > 0)
+        activitylevel_id = userData[0].activitylevel_id
+    else
+        return ["Invalid Username", revisedWorkout]
+
+    let workoutData = await db.query(workoutQuery, newWorkout)
+    for(let i = 0; i < workoutList.length; i++){
+        if(i == index){
+            setInfo = generateWorkout.getSetInfo(workoutData[0].settype, activitylevel_id, workoutData[0].musclegroup)
+            let tempWorkout = {
+                workoutMuscleGroup: workoutData[0].musclegroup,
+                workoutName: workoutData[0].name,
+                workoutSets: setInfo[0],
+                workoutReps: setInfo[1],
+                workoutRest: setInfo[2],
+                workoutTarget: workoutData[0].targetmuscles,
+                workoutLink: workoutData[0].videourl,
             }
-            else
-                res.status(400).send("Invalid Username")
-        })
-    })
+            revisedWorkout.push(tempWorkout)
+        }
+        else
+            revisedWorkout.push(workoutList[i])
+    }
+    return ["Success", revisedWorkout]
 }
 
-//http://localhost:3200/sendMuscleSwap
-function sendMuscleSwap(req, res){
+//http://localhost:3200/workout/sendMuscleSwap
+async function sendMuscleSwap(workoutList, workoutName, username){
     char = ","
     substring = ""
     equipmentlevel_id = 0
     muscleList = []
     target = ""
-    var con = mysql.createConnection({
-        host: "fitforge.c6jigttrktuk.us-west-1.rds.amazonaws.com",
-        user: "fitforge",
-        password: "fitforge",
-        database: "fitforge"
-    });
+    counter = 0
 
-    const {workoutName, username} = req.body
-    const query1 = "SELECT * FROM users where username = ?"
-    const query2 = "SELECT * FROM exercises where name = ?"
-    const query3 = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
-    con.connect(function(err){
-        if (err) throw err;
-        con.query(query1, username, function (err, result){
-            if (err) throw err;
-            if(result.length > 0){
-                equipmentlevel_id = result[0].equipmentlevel_id
-                con.query(query2, workoutName, function(err, result){
-                    if (err) throw err;
-                    if(result.length > 0){
-                        workoutInfo = result[0]
-                        index = workoutInfo.targetmuscles.indexOf(char)
-                        if(index > 0){
-                            substring = workoutInfo.targetmuscles.substr(0, index-1)
-                            target = substring
-                        }
-                        else{
-                            target = workoutInfo.targetmuscles
-                        }
-                        queryData = [workoutInfo.musclegroup, equipmentlevel_id]
-                        con.query(query3, queryData, function(err, result){
-                            if (err) throw err;
-                            for(let i = 0; i < result.length; i++){
-                                if(result[i].name != workoutName){
-                                    check = result[i].targetmuscles.includes(target)
-                                    if(check == true){
-                                        muscleList.push(result[i].name)
-                                    }
-                                }
-                            }
-                            res.status(200).json(muscleList)
-                        })
-                    }
-                    else   
-                        res.status(400).send("Invalid Workout Name")
-                })
+    const userQuery = "SELECT * FROM users where username = ?"
+    const workoutQuery = "SELECT * FROM exercises where name = ?"
+    const muscleQuery = "SELECT * FROM exercises WHERE (musclegroup = ?) and (equipmentlevel_id = ?)"
+
+    let userData = await db.query(userQuery, username)
+    if(userData.length > 0)
+        equipmentlevel_id = userData[0].equipmentlevel_id
+    else
+        return ["Invalid Username", muscleList]
+
+    let workoutData = await db.query(workoutQuery, workoutName)
+    workoutInfo = workoutData[0]
+    index = workoutInfo.targetmuscles.indexOf(char)
+    if(index > 0){
+        substring = workoutInfo.targetmuscles.substr(0, index)
+        target = substring
+    }
+    else{
+        target = workoutInfo.targetmuscles
+    }
+    queryData = [workoutInfo.musclegroup, equipmentlevel_id]
+
+    let muscleData = await db.query(muscleQuery, queryData)
+    for(let i = 0; i < muscleData.length; i++){
+        if(muscleData[i].name != workoutName){
+            check = muscleData[i].targetmuscles.includes(target)
+            if(check == true){
+                for(let k = 0; k < workoutList.length; k++){
+                    if(workoutList[k].workoutName != muscleData[i].name)
+                        counter++
+                }
+                if(counter == workoutList.length)
+                    muscleList.push(muscleData[i].name)
             }
-            else
-                res.status(400).send("Invalid Username")
-        })
-    })
+            counter = 0
+        }
+    }
+    return ["Success", muscleList]
 }
 
 module.exports = {updateWorkout, sendMuscleSwap};
