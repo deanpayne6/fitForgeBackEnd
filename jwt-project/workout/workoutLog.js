@@ -65,7 +65,7 @@ async function workoutLog(username, dateRequested) {
 // }
 
 //http://localhost:3200/workout/submitWorkout
-async function submitWorkout(rpe, username){
+async function submitWorkout(ratings, username){
   workoutInfo = []
   exercise_id = 0
   user_id = 0
@@ -94,7 +94,7 @@ async function submitWorkout(rpe, username){
     for(let i = 0; i < workoutList.length; i++){
       workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
       exercise_id = workoutData[0].exercise_id
-      workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, rpe[i]]
+      workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, ratings[i]]
       await db.query(insertQuery, workoutInfo)
     }
     await db.query(dropDaily, [user_id, formatDate])
