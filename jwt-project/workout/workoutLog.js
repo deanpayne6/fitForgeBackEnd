@@ -9,7 +9,7 @@ function setWorkoutInfo(workout){
     workoutSets: workout.sets,
     workoutReps: workout.reps,
     workoutRest: workout.rest,
-    workoutRpe: workout.rpe
+    workoutRating: workout.rpe
   }
   return workoutInfo
 }
