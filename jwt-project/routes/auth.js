@@ -153,6 +153,38 @@ router.post('/updatePassword', async (req, res) => {
   }
 });
 
+router.post('/deleteUser', async (req, res) => {
+  try {
+    // Extract user information from the request body
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // Check if the user exists
+    const userExists = await checkUser(email);
+
+    if (!userExists) {
+      return res.status(404).send("User not found.");
+    }
+
+    // Check if the provided password is correct
+    const passwordMatch = await checkPass(email, password);
+
+    if (!passwordMatch) {
+      return res.status(401).send("Invalid password.");
+    }
+
+    // Delete the user from the database
+    const deleteUserQuery = "DELETE FROM users WHERE emailaddress = ?";
+    await db.query(deleteUserQuery, [email]);
+
+    console.log(`User with email ${email} deleted successfully.`);
+    return res.status(200).send("User deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
 
 async function checkUser(email) {
   const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
