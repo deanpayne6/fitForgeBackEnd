@@ -153,36 +153,51 @@ router.post('/updatePassword', async (req, res) => {
   }
 });
 
-router.post('/deleteUser', async (req, res) => {
-  try {
-    // Extract user information from the request body
-    const email = req.body.email;
-    const password = req.body.password;
+router.post('/deleteUser', async (req, res) => { 
+  const userId = req.body.user_id;
+  return new Promise((resolve, reject) => {
+    // Start a transaction
+    db.beginTransaction(async (err) => {
+      if (err) {
+        return reject(err);
+      }
 
-    // Check if the user exists
-    const userExists = await checkUser(email);
+      try {
+        // Delete records from various tables based on user_id
+        const deleteGoalsQuery = "DELETE FROM goals WHERE user_id = ?";
+        const deleteWorkoutPlanExercisesQuery = "DELETE FROM workoutplan_exercises WHERE user_id = ?";
+        const deleteDailyWorkoutsExercisesQuery = "DELETE FROM dailyworkouts_exercises WHERE user_id = ?";
+        const deleteWorkoutPlanQuery = "DELETE FROM workoutplan WHERE user_id = ?";
+        const deleteUsersExercisesQuery = "DELETE FROM users_exercises WHERE user_id = ?";
+        const deleteUsersQuery = "DELETE FROM users WHERE user_id = ?";
 
-    if (!userExists) {
-      return res.status(404).send("User not found.");
-    }
+        await Promise.all([
+          db.query(deleteGoalsQuery, [userId]),
+          db.query(deleteWorkoutPlanExercisesQuery, [userId]),
+          db.query(deleteDailyWorkoutsExercisesQuery, [userId]),
+          db.query(deleteWorkoutPlanQuery, [userId]),
+          db.query(deleteUsersExercisesQuery, [userId]),
+          db.query(deleteUsersQuery, [userId]),
+        ]);
 
-    // Check if the provided password is correct
-    const passwordMatch = await checkPass(email, password);
+        // Commit the transaction
+        db.commit((commitErr) => {
+          if (commitErr) {
+            return reject(commitErr);
+          }
 
-    if (!passwordMatch) {
-      return res.status(401).send("Invalid password.");
-    }
+          console.log(`User with ID ${userId} and associated data deleted successfully.`);
+          resolve();
+        });
+      } catch (error) {
+        // Rollback the transaction in case of an error
+        db.rollback(() => {
+          reject(error);
+        });
+      }
+    });
+  });
 
-    // Delete the user from the database
-    const deleteUserQuery = "DELETE FROM users WHERE emailaddress = ?";
-    await db.query(deleteUserQuery, [email]);
-
-    console.log(`User with email ${email} deleted successfully.`);
-    return res.status(200).send("User deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    return res.status(500).send("Internal Server Error");
-  }
 });
 
 
