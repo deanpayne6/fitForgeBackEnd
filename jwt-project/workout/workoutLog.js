@@ -9,7 +9,7 @@ function setWorkoutInfo(workout){
     workoutSets: workout.sets,
     workoutReps: workout.reps,
     workoutRest: workout.rest,
-    workoutRating: workout.rpe
+    workoutRating: workout.rating
   }
   return workoutInfo
 }
@@ -20,7 +20,7 @@ async function workoutLog(username, dateRequested) {
   workoutData = []
   
   const userQuery = "SELECT * FROM users WHERE username = ?"
-  const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, rpe FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
+  const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, rating FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
   
   let userData = await db.query(userQuery, username)
   if(userData.length > 0)
@@ -44,7 +44,7 @@ async function workoutLog(username, dateRequested) {
 //   queryData = []
   
 //   const userQuery = "SELECT * FROM users WHERE username = ?"
-//   const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, rpe FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
+//   const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, rating FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
   
 //   let userData = await db.query(userQuery, username)
 //   if(userData.length > 0)
@@ -78,7 +78,7 @@ async function submitWorkout(ratings, username){
 
   const userQuery = "SELECT * FROM users where username = ?"
   const workoutQuery = "SELECT * FROM exercises where name = ?"
-  const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rpe) VALUES (?, ?, ?, ?, ?, ?, ?)"
+  const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
   const dropDaily = "DELETE FROM dailyworkouts_exercises WHERE user_id = ? and day = ?"
 
   let userData = await db.query(userQuery, username)
