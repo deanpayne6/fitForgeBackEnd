@@ -9,50 +9,60 @@ const nodemailer = require('nodemailer');
 
 
 //PasswordRecovery
-router.post('/sendEmailPasswordRecovery', async (req, res) =>{
-    const transporter = nodemailer.createTransport({ 
-        service: 'gmail', 
-        auth: { 
-            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
-            pass: secure_configuration.PASSWORD 
-        } 
-    }); 
-      
-    const token = jwt.sign({ 
-            data: 'Token Data'  , 
-        }, secretKey, { expiresIn: '10m' }   
-    );     
-      
-    const mailConfigurations = { 
-      
-        // Send FitForge Support Email
-        from: 'fitForge.support@gmail.com', 
-      
-        to: email, 
-      
-        // Subject of Email 
-        subject: 'Email Verification', 
+router.post('/sendEmailPasswordRecovery', async (req, res) => {
+  const email = req.body.email;
+
+  if (!email) {
+      return res.status(400).send('Email not provided in the request body');
+  }
+
+  res.status(200).send(`Received email: ${email}`);
+/*
+  const transporter = nodemailer.createTransport({
+      pool: true, // Enable connection pooling
+      service: 'gmail',
+      auth: {
+          user: "helpfitforge@gmail.com",
+          pass: "FitForgePassword!123"
+      }
+  });
+
+  const token = jwt.sign(
+      { data: 'Token Data' },
+      secretKey,
+      { expiresIn: '10m' }
+  );
+
+  const mailConfigurations = {
+      from: 'fitForge.support@gmail.com',
+      to: email,
+      subject: 'Email Verification',
+      text: `
+          Hi,
           
-        // The email that is sent to user. 
-        text: `
-        Hi 
-        
-        There was a request to change your password!
-        
-        If you did not make this request then please ignore this email.
-        
-        Otherwise, please click this link to change your password: 
-               http://localhost:3200/verify_passreset/${token}  
-               Thanks`
+          There was a request to change your password!
           
-    }; 
-      
-    transporter.sendMail(mailConfigurations, function(error, info){ 
-        if (error) throw Error(error); 
-        console.log('Email Sent Successfully'); 
-        console.log(info); 
-    }); 
+          If you did not make this request, please ignore this email.
+          
+          Otherwise, please click this link to change your password: 
+          http://localhost:3200/verify_passreset/${token}
+          
+          Thanks`
+  };
+
+  try {
+      const info = await transporter.sendMail(mailConfigurations);
+      console.log('Email Sent Successfully');
+      console.log(info);
+      res.status(200).send('Email sent successfully');
+  } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).send('Error sending email');
+  }
+  */
+ 
 });
+
 
 //ChangePassword
 router.post('/changePassword', async (req, rex)=>{
@@ -100,8 +110,8 @@ async function verify_email(email){
     const transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
-            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
-            pass: secure_configuration.PASSWORD 
+          user: "helpfitforge@gmail.com", 
+          pass: "FitForgePassword!123"
         } 
     }); 
       

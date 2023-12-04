@@ -155,49 +155,14 @@ router.post('/updatePassword', async (req, res) => {
 
 router.post('/deleteUser', async (req, res) => { 
   const userId = req.body.user_id;
-  return new Promise((resolve, reject) => {
-    // Start a transaction
-    db.beginTransaction(async (err) => {
-      if (err) {
-        return reject(err);
-      }
-
-      try {
-        // Delete records from various tables based on user_id
-        const deleteGoalsQuery = "DELETE FROM goals WHERE user_id = ?";
-        const deleteWorkoutPlanExercisesQuery = "DELETE FROM workoutplan_exercises WHERE user_id = ?";
-        const deleteDailyWorkoutsExercisesQuery = "DELETE FROM dailyworkouts_exercises WHERE user_id = ?";
-        const deleteWorkoutPlanQuery = "DELETE FROM workoutplan WHERE user_id = ?";
-        const deleteUsersExercisesQuery = "DELETE FROM users_exercises WHERE user_id = ?";
-        const deleteUsersQuery = "DELETE FROM users WHERE user_id = ?";
-
-        await Promise.all([
-          db.query(deleteGoalsQuery, [userId]),
-          db.query(deleteWorkoutPlanExercisesQuery, [userId]),
-          db.query(deleteDailyWorkoutsExercisesQuery, [userId]),
-          db.query(deleteWorkoutPlanQuery, [userId]),
-          db.query(deleteUsersExercisesQuery, [userId]),
-          db.query(deleteUsersQuery, [userId]),
-        ]);
-
-        // Commit the transaction
-        db.commit((commitErr) => {
-          if (commitErr) {
-            return reject(commitErr);
-          }
-
-          console.log(`User with ID ${userId} and associated data deleted successfully.`);
-          resolve();
-        });
-      } catch (error) {
-        // Rollback the transaction in case of an error
-        db.rollback(() => {
-          reject(error);
-        });
-      }
-    });
-  });
-
+  try {
+    await deleteUserData(userId);
+    console.log('User with ID ${userId} and associated data deleted successfully.');
+    res.status(200).send('User deleted successfully');
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 
@@ -233,5 +198,33 @@ async function checkData(data, data_name) {
   }
 }
 
+async function deleteUserData(userId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Start a transaction
+      await db.beginTransaction();
+
+      // Delete records from various tables based on user_id
+      const deleteQueries = [
+        "DELETE FROM goals WHERE user_id = ?",
+        "DELETE FROM workoutplan_exercises WHERE user_id = ?",
+        "DELETE FROM dailyworkouts_exercises WHERE user_id = ?",
+        "DELETE FROM workoutplan WHERE user_id = ?",
+        "DELETE FROM users_exercises WHERE user_id = ?",
+        "DELETE FROM users WHERE user_id = ?"
+      ];
+
+      await Promise.all(deleteQueries.map(query => db.query(query, [userId])));
+
+      // Commit the transaction
+      await db.commit();
+      resolve();
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      await db.rollback();
+      reject(error);
+    }
+  });
+}
 
 module.exports = router;
