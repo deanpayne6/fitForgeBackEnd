@@ -10,11 +10,12 @@ const nodemailer = require('nodemailer');
 
 //PasswordRecovery
 router.post('/sendEmailPasswordRecovery', async (req, res) =>{
+  const email = req.body.email;
     const transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
-            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
-            pass: secure_configuration.PASSWORD 
+            user: "help.fitforge@gmail.com", //dummy data and needs to be added when we have a support email
+            pass: "qjwg xoda adiy sxva" 
         } 
     }); 
       
@@ -26,7 +27,7 @@ router.post('/sendEmailPasswordRecovery', async (req, res) =>{
     const mailConfigurations = { 
       
         // Send FitForge Support Email
-        from: 'fitForge.support@gmail.com', 
+        from: 'help.fitforge@gmail.com', 
       
         to: email, 
       
@@ -42,7 +43,7 @@ router.post('/sendEmailPasswordRecovery', async (req, res) =>{
         If you did not make this request then please ignore this email.
         
         Otherwise, please click this link to change your password: 
-               http://localhost:3200/verify_passreset/${token}  
+               http://localhost:3200//verify/${token}  
                Thanks`
           
     }; 
@@ -51,6 +52,7 @@ router.post('/sendEmailPasswordRecovery', async (req, res) =>{
         if (error) throw Error(error); 
         console.log('Email Sent Successfully'); 
         console.log(info); 
+      
     }); 
 });
 
@@ -83,7 +85,7 @@ router.post('/changePassword', async (req, rex)=>{
 
 //verifyToken
 router.get('/verify/:token', async (req, res) => {
-    const {token} = req.params; 
+  const token = req.params.token;
   
     // Verifying the JWT token  
     jwt.verify(token, secretKey, function(err, decoded) { 
@@ -100,8 +102,8 @@ async function verify_email(email){
     const transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
-            user: secure_configuration.EMAIL_USERNAME, //dummy data and needs to be added when we have a support email
-            pass: secure_configuration.PASSWORD 
+            user: "help.fitforge@gmail.com", //dummy data and needs to be added when we have a support email
+            pass: "qjwg xoda adiy sxva" 
         } 
     }); 
       
@@ -113,7 +115,7 @@ async function verify_email(email){
     const mailConfigurations = { 
       
         // Send FitForge Support Email
-        from: 'fitForge.support@gmail.com', 
+        from: 'help.fitforge@gmail.com', 
       
         to: email, 
       
@@ -134,6 +136,7 @@ async function verify_email(email){
         console.log('Email Sent Successfully'); 
         console.log(info); 
     }); 
+
 }
 
 
