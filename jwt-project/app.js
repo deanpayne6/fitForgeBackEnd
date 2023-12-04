@@ -22,8 +22,6 @@ const User = require("./models/user");
 
 const auth = require("./middleware/auth");
 
-console.log('hi');
-
 app.use(cors());
 app.use(cookieParser());
 
