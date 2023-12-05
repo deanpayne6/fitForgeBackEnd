@@ -55,6 +55,7 @@ router.post('/sendEmailPasswordRecovery', async (req, res) =>{
         console.log(info); 
       
     }); 
+    res.send('Email Sent Successfully') ;
 });
 
 //ChangePassword
@@ -88,15 +89,17 @@ router.post('/changePassword', async (req, rex)=>{
 router.get('/verify/:token', async (req, res) => {
   const token = req.params.token;
   
-    // Verifying the JWT token  
-    jwt.verify(token, secretKey, function(err, decoded) { 
-        if (err) { 
-            console.log(err); 
-            res.send("Email verification failed, possibly the link is invalid or expired"); 
-        } 
-        else { res.send("Email verifified successfully"); 
-        } 
-    }); 
+    // Verify the token
+    jwt.verify(token, secretKey, (err, decoded) => {
+      if (err) {
+          // Token verification failed
+          return res.status(401).send('Token verification failed');
+      }
+
+      // Token verification successful
+      const tokenData = decoded.data;
+      res.status(200).send(`Token verified successfully. Data: ${tokenData}`);
+  });
 });
 // Email Verification
 async function verify_email(email){
