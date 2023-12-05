@@ -98,6 +98,46 @@ function getSetInfo(settype, activitylevel_id, musclegroup){
     return setInfo
 }
 
+async function integrateRating(muscleArray, user_id){
+    sum = 0
+    avg = 0
+    roundedAvg = 0
+    newMsucleArray = []
+    const workoutQuery = "SELECT name, rating FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (exercises.name = ?)"
+    
+    for(let n = 0; n < muscleArray.length; n++){
+        singleGroup = muscleArray[n]
+        updatedGroup = muscleArray[n]
+        numberArray = new Array(singleGroup.length)
+        for(let i = 0; i < singleGroup.length; i++){
+            let workoutData = await db.query(workoutQuery, [user_id, singleGroup[i].name])
+            if(workoutData.length > 0){
+                for(let k = 0; k < workoutData.length; k++){
+                    sum += workoutData[k].rating
+                }
+                avg = sum/workoutData.length
+                roundedAvg = Math.round(avg)
+                if(roundedAvg > 1){
+                    numberArray[i] = roundedAvg
+                }
+            }
+            sum = 0
+            avg = 0
+            roundedAvg = 0
+        }
+        for(let j = 0; j < singleGroup.length; j++){
+            if(numberArray[j] != null){
+                for(let m = 1; m < numberArray[j]; m++){
+                    updatedGroup.push(singleGroup[j])
+                }
+            }
+        }
+        newMsucleArray.push(updatedGroup)
+    }
+    return newMsucleArray
+
+}
+
 function getWorkout(length, muscleArray, workoutInput, activitylevel_id){
     workoutList = []
     for(let i = 0; i < length; i++){
@@ -118,7 +158,11 @@ function getWorkout(length, muscleArray, workoutInput, activitylevel_id){
         }
 
         workoutList.push(fullWorkout)
-        muscleArray[count].splice(randomWorkout, 1)
+        for(let j = singleGroup.length-1; j >= 0; j--){
+            if(singleGroup[j].name == fullWorkout.workoutName){
+                muscleArray[count].splice(j, 1)
+            }
+        }
         count++
     }
     return workoutList
@@ -147,12 +191,14 @@ async function generateWorkout(workoutInput, workoutLength, username){
     tempArray = []
     equipmentlevel_id = 0
     activitylevel_id = 0
+    user_id = 0
     count = 0
 
     const userQuery = "SELECT * FROM users where username = ?"
     const workoutQuery = "SELECT * FROM exercises WHERE equipmentlevel_id = ?"
     let userData = await db.query(userQuery, username)
     if(userData.length > 0){
+        user_id = userData[0].user_id
         equipmentlevel_id = userData[0].equipmentlevel_id
         activitylevel_id = userData[0].activitylevel_id
     }
@@ -169,6 +215,7 @@ async function generateWorkout(workoutInput, workoutLength, username){
         muscleArray.push(tempArray)
         tempArray = []
     }
+    muscleArray = await integrateRating(muscleArray, user_id)
     workoutList = getWorkout(getWorkoutLength(workoutLength, workoutInput), muscleArray, workoutInput, activitylevel_id)
     return ["Success", workoutList]
 }
