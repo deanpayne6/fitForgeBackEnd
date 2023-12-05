@@ -3,7 +3,7 @@ const https = require("https");
 const app = require("./app");
 const fs = require("fs");
 
-const allowedOrigins = ["https://localhost:4200"]; 
+//const allowedOrigins = ["https://localhost:4200"]; 
 
 const port = 3200;
 
@@ -12,7 +12,7 @@ const options = {
   cert: fs.readFileSync("keys/fullchain.pem")
 }
 
-let prod = false;
+let prod = true;
 
 if (prod){
   const server = https.createServer(options, app);
