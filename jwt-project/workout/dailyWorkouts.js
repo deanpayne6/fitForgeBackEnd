@@ -23,6 +23,7 @@ async function storeDailyWorkouts(multipleWorkoutList, username){
         workoutList = multipleWorkoutList[i]
         if(workoutList.length > 0){
             date.setDate(date.getDate()+i)
+            date.setHours(date.getHours() - 8)
             day = date.getDate()
             month = date.getMonth() + 1
             year = date.getFullYear()
@@ -90,6 +91,7 @@ async function getWeeklyWorkout(username){
 
     for(let i = 0; i < 7; i++){
         date.setDate(date.getDate()+i)
+        date.setHours(date.getHours() - 8)
         day = date.getDate()
         month = date.getMonth() + 1
         year = date.getFullYear()
@@ -111,6 +113,7 @@ async function checkWorkout(username){
     user_id = 0
     checkData = "0"
     const date = new Date() 
+    date.setHours(date.getHours() - 8)
     day = date.getDate()
     month = date.getMonth() + 1
     year = date.getFullYear()
