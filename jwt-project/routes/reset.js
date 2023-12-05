@@ -11,6 +11,7 @@ const nodemailer = require('nodemailer');
 //PasswordRecovery
 router.post('/sendEmailPasswordRecovery', async (req, res) =>{
   const email = req.body.email;
+  console.log(email)
     const transporter = nodemailer.createTransport({ 
         service: 'gmail', 
         auth: { 
