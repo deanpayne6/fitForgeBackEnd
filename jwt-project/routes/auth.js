@@ -76,7 +76,13 @@ router.post('/register', async (req, res) => {
 
   const insert = await db.query(query, user_data);
 
-  return res.status(201).json({"status": "201"});
+  const useridquery = "SELECT user_id FROM users where emailaddress = ?";
+  let user_id = await db.query(useridquery, user.email);
+  user_id = (user_id[0].user_id);
+
+  const token = jwt.sign({ user_id }, secretKey);
+
+  return res.status(201).json({"status": "201", "token": token});
   
 });
 
