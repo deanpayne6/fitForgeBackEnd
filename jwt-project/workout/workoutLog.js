@@ -71,12 +71,13 @@ async function submitWorkout(ratings, username){
   user_id = 0
   count = 0
   const date = new Date() 
+  date.setHours(date.getHours() - 8)
   day = date.getDate()
   month = date.getMonth() + 1
   year = date.getFullYear()
-  date.setHours(date.getHours() - 8)
+ 
   formatDate = year + "-" + month + "-" + day
-  console.log(formatDate)
+  console.log(date)
   const userQuery = "SELECT * FROM users where username = ?"
   const workoutQuery = "SELECT * FROM exercises where name = ?"
   const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -96,6 +97,7 @@ async function submitWorkout(ratings, username){
       workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
       exercise_id = workoutData[0].exercise_id
       workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, ratings[i]]
+      console.log(formatDate)
       await db.query(insertQuery, workoutInfo)
     }
     await db.query(dropDaily, [user_id, formatDate])
