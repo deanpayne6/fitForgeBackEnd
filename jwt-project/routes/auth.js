@@ -153,6 +153,46 @@ router.post('/updatePassword', async (req, res) => {
   }
 });
 
+router.post('/deleteUser', async (req, res) => { 
+  const userId = req.body.user_id;
+  try {
+    await deleteUserData(userId);
+    console.log(`User with ID ${userId} and associated data deleted successfully`);;
+    res.status(200).send('User deleted successfully');
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+async function deleteUserData(userId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Start a transaction
+      //await db.beginTransaction();
+
+      // Delete records from various tables based on user_id
+      const deleteQueries = [
+        "DELETE FROM goals WHERE user_id = ?",
+        "DELETE FROM workoutplan_exercises WHERE user_id = ?",
+        "DELETE FROM dailyworkouts_exercises WHERE user_id = ?",
+        "DELETE FROM workoutplan WHERE user_id = ?",
+        "DELETE FROM users_exercises WHERE user_id = ?",
+        "DELETE FROM users WHERE user_id = ?"
+      ];
+
+      await Promise.all(deleteQueries.map(query => db.query(query, [userId])));
+
+      // Commit the transaction
+      await db.commit();
+      resolve();
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      //await db.rollback();
+      reject(error);
+    }
+  });
+}
 
 async function checkUser(email) {
   const result = await db.query("SELECT user_id FROM users WHERE emailaddress = ?", email);
