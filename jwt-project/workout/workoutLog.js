@@ -74,8 +74,9 @@ async function submitWorkout(ratings, username){
   day = date.getDate()
   month = date.getMonth() + 1
   year = date.getFullYear()
+  date.setHours(date.getHours() - 8)
   formatDate = year + "-" + month + "-" + day
-
+  console.log(formatDate)
   const userQuery = "SELECT * FROM users where username = ?"
   const workoutQuery = "SELECT * FROM exercises where name = ?"
   const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
