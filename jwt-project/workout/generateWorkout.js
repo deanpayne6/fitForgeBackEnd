@@ -117,19 +117,18 @@ async function integrateRating(muscleArray, user_id){
                 }
                 avg = sum/workoutData.length
                 roundedAvg = Math.round(avg)
-                if(roundedAvg > 1){
-                    numberArray[i] = roundedAvg
-                }
+                numberArray[i] = roundedAvg
+            }
+            else{
+                numberArray[i] = 3
             }
             sum = 0
             avg = 0
             roundedAvg = 0
         }
         for(let j = 0; j < singleGroup.length; j++){
-            if(numberArray[j] != null){
-                for(let m = 1; m < numberArray[j]; m++){
-                    updatedGroup.push(singleGroup[j])
-                }
+            for(let m = 1; m < numberArray[j]; m++){
+                updatedGroup.push(singleGroup[j])
             }
         }
         newMsucleArray.push(updatedGroup)

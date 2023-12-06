@@ -87,6 +87,7 @@ router.post("/storeDailyWorkouts", async (req, res) => {
 router.post("/getWorkout", async (req, res) => {
   const {username} = req.body
   const date = new Date() 
+  date.setHours(date.getHours() - 8)
   day = date.getDate()
   month = date.getMonth() + 1
   year = date.getFullYear()

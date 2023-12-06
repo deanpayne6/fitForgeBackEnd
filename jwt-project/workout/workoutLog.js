@@ -77,11 +77,10 @@ async function submitWorkout(ratings, username){
   year = date.getFullYear()
  
   formatDate = year + "-" + month + "-" + day
-  console.log(date)
   const userQuery = "SELECT * FROM users where username = ?"
   const workoutQuery = "SELECT * FROM exercises where name = ?"
   const insertQuery = "INSERT INTO workoutplan_exercises (user_id, day, exercise_id, sets, reps, rest, rating) VALUES (?, ?, ?, ?, ?, ?, ?)"
-  const dropDaily = "DELETE FROM dailyworkouts_exercises WHERE user_id = ? and day = ?"
+  const dropDaily = "DELETE FROM dailyworkouts_exercises WHERE user_id = ? AND day <= ?"
 
   let userData = await db.query(userQuery, username)
   if(userData.length > 0){
@@ -97,7 +96,6 @@ async function submitWorkout(ratings, username){
       workoutData = await db.query(workoutQuery, workoutList[i].workoutName)
       exercise_id = workoutData[0].exercise_id
       workoutInfo = [user_id, formatDate, exercise_id, workoutList[i].workoutSets, workoutList[i].workoutReps, workoutList[i].workoutRest, ratings[i]]
-      console.log(formatDate)
       await db.query(insertQuery, workoutInfo)
     }
     await db.query(dropDaily, [user_id, formatDate])
