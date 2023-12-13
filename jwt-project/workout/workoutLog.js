@@ -36,34 +36,6 @@ async function workoutLog(username, dateRequested) {
   return ["Success", workoutData]
 }
 
-//Old workoutLog code
-// async function workoutLog(username, dateRequested) {
-//   user_id = 0
-//   tempLog = []
-//   sortedLog = []
-//   queryData = []
-  
-//   const userQuery = "SELECT * FROM users WHERE username = ?"
-//   const workoutQuery = "SELECT name, musclegroup, sets, reps, rest, rating FROM workoutplan_exercises INNER JOIN exercises ON workoutplan_exercises.exercise_id = exercises.exercise_id WHERE (workoutplan_exercises.user_id = ?) and (workoutplan_exercises.day = ?)"
-  
-//   let userData = await db.query(userQuery, username)
-//   if(userData.length > 0)
-//     user_id = userData[0].user_id
-//   else
-//     return ["Invalid Username", sortedLog] 
-
-//   for(let j = 0; j < dateRequested.length; j++){
-//     holdWorkoutData = await db.query(workoutQuery, [user_id, dateRequested[j]])
-//     for(let i = 0; i < holdWorkoutData.length; i++){
-//       tempData = setWorkoutInfo(holdWorkoutData[i])
-//       tempLog.push(tempData)
-//     }
-//     sortedLog.push(tempLog)
-//     tempLog = []
-//   }
-//   return ["Success", sortedLog]
-// }
-
 //http://localhost:3200/workout/submitWorkout
 async function submitWorkout(ratings, username){
   workoutInfo = []

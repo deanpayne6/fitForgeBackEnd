@@ -1,10 +1,5 @@
 const express = require('express');
-const db = require("../db_connect");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
-const questionnaire_model = require("../models/questionnaire");
-const user = require("../models/user");
-const mysql = require("mysql");
 const updateWorkout = require("../workout/updateWorkout")
 const generateWorkout = require("../workout/generateWorkout");
 const workoutLog = require("../workout/workoutLog");
@@ -44,7 +39,7 @@ router.post("/submitWorkout", async (req, res) => {
     res.status(400).send(data)
   
   else if(data == "Success")
-    res.status(200).send(data)
+    res.status(200)
 })
 
 //http://localhost:3200/workout/updateWorkout
@@ -80,7 +75,7 @@ router.post("/storeDailyWorkouts", async (req, res) => {
     res.status(400).send(data)
   
   else if(data == "Success")
-    res.status(200).send(data)
+    res.status(200)
 })
 
 //http://localhost:3200/workout/getWorkout
