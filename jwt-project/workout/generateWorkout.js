@@ -117,19 +117,18 @@ async function integrateRating(muscleArray, user_id){
                 }
                 avg = sum/workoutData.length
                 roundedAvg = Math.round(avg)
-                if(roundedAvg > 1){
-                    numberArray[i] = roundedAvg
-                }
+                numberArray[i] = roundedAvg
+            }
+            else{
+                numberArray[i] = 3
             }
             sum = 0
             avg = 0
             roundedAvg = 0
         }
         for(let j = 0; j < singleGroup.length; j++){
-            if(numberArray[j] != null){
-                for(let m = 1; m < numberArray[j]; m++){
-                    updatedGroup.push(singleGroup[j])
-                }
+            for(let m = 1; m < numberArray[j]; m++){
+                updatedGroup.push(singleGroup[j])
             }
         }
         newMsucleArray.push(updatedGroup)
@@ -169,16 +168,16 @@ function getWorkout(length, muscleArray, workoutInput, activitylevel_id){
 }
 
 function getWorkoutLength(workoutLength, workoutInput){
-    if(workoutLength == "short" && workoutInput.length == 1){
+    if(workoutLength == "Short" && workoutInput.length == 1){
         length = 3
     }
-    else if((workoutLength == "short" && workoutInput.length == 2) || (workoutLength == "medium" && workoutInput.length == 1)){
+    else if((workoutLength == "Short" && workoutInput.length == 2) || (workoutLength == "Medium" && workoutInput.length == 1)){
         length = 4
     }
-    else if((workoutLength == "medium" && workoutInput.length >= 2) || (workoutLength == "long" && workoutInput.length == 1)){
+    else if((workoutLength == "Medium" && workoutInput.length >= 2) || (workoutLength == "Long" && workoutInput.length == 1)){
         length = 6
     }
-    else if((workoutLength == "long" && workoutInput.length >= 2)){
+    else if((workoutLength == "Long" && workoutInput.length >= 2)){
         length = 8
     }
     return length
